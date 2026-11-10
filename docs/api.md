@@ -49,6 +49,29 @@ Sem gastos no mês atual, a resposta é uma lista vazia (nunca `404`).
 []
 ```
 
+## `GET /api/expenses/total`
+Devolve o **total gasto no mês atual**: a soma de `amount` dos **mesmos gastos** que o
+`GET /api/expenses` lista (mesma regra de mês atual, pela data do gasto, no código em
+`CurrentMonth.cs`). Não há parâmetros.
+
+A soma é feita em `decimal`, então é exata em centavos: `0.10 + 0.20` dá `0.30`, sem resíduo
+de ponto flutuante.
+
+> **Atenção:** o número não sai com 2 casas fixas. Sem gastos vem `0`; com gastos, as casas
+> acompanham os valores somados (ex.: `158.40`, `0.30`). Valor sempre com 2 casas é a MW-009.
+
+### **200 OK** (com gastos)
+Gastos de R$ 45,90, R$ 12,50 e R$ 100,00 no mês atual:
+```json
+{"total":158.40}
+```
+
+### **200 OK** (nenhum gasto no mês)
+Sem gastos no mês atual, o total é `0` (nunca `404` nem erro).
+```json
+{"total":0}
+```
+
 ## `POST /api/expenses`
 Registra um gasto. Nesta versão os gastos ficam **em memória** (somem ao reiniciar a API).
 
