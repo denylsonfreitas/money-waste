@@ -116,6 +116,29 @@ describe('ExpenseForm', () => {
       expect(byTestId('category-error')).toBeNull();
     });
 
+    it('avisa quem usa o formulário (evento created) com o gasto devolvido pela API', () => {
+      const created: unknown[] = [];
+      fixture.componentInstance.created.subscribe((expense) => created.push(expense));
+      fillValid();
+      submit();
+
+      const expense = { id: '1', amount: 45.9, description: 'Almoço', category: 'food', date: '2026-11-05' };
+      http.expectOne(API_URL).flush(expense, { status: 201, statusText: 'Created' });
+
+      expect(created).toEqual([expense]);
+    });
+
+    it('não emite created quando a API falha', () => {
+      const created: unknown[] = [];
+      fixture.componentInstance.created.subscribe((expense) => created.push(expense));
+      fillValid();
+      submit();
+
+      http.expectOne(API_URL).error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' });
+
+      expect(created).toEqual([]);
+    });
+
     it('formata valores maiores no padrão brasileiro', () => {
       fillValid();
       submit();

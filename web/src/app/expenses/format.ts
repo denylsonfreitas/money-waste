@@ -11,3 +11,9 @@ export function todayIso(now: Date = new Date()): string {
   const day = String(now.getDate()).padStart(2, '0');
   return `${now.getFullYear()}-${month}-${day}`;
 }
+
+/** Ex.: "2026-11-05" → "05/11/2026". */
+export function formatDateBr(isoDate: string): string {
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+}

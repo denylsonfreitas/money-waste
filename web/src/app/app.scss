@@ -30,3 +30,7 @@ h2 {
   margin: 0 0 1rem;
   font-size: 1.15rem;
 }
+
+.card + .card {
+  margin-top: 1.5rem;
+}

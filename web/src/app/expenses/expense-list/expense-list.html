@@ -1,0 +1,25 @@
+@if (failed()) {
+  <p class="message failure" role="alert" data-testid="list-error">Não foi possível carregar os gastos do mês.</p>
+} @else if (expenses(); as list) {
+  @if (list.length) {
+    <ul class="expense-list" data-testid="expense-list">
+      @for (expense of list; track expense.id) {
+        <li class="expense" data-testid="expense-item">
+          <div class="info">
+            <span class="description" data-testid="expense-description">{{ expense.description }}</span>
+            <span class="meta">
+              <span data-testid="expense-date">{{ formatDateBr(expense.date) }}</span>
+              ·
+              <span data-testid="expense-category">{{ categoryLabel(expense.category) }}</span>
+            </span>
+          </div>
+          <span class="amount" data-testid="expense-amount">{{ formatBrl(expense.amount) }}</span>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="message" data-testid="list-empty">Nenhum gasto registrado neste mês.</p>
+  }
+} @else {
+  <p class="message" data-testid="list-loading">Carregando…</p>
+}

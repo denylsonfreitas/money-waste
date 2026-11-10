@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
-import { CreateExpenseRequest, EXPENSE_CATEGORIES, ExpenseCategory } from '../expense.model';
+import { CreateExpenseRequest, EXPENSE_CATEGORIES, Expense, ExpenseCategory } from '../expense.model';
 import { ExpenseService } from '../expense.service';
 import { formatBrl, todayIso } from '../format';
 
@@ -30,6 +30,9 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
 export class ExpenseForm {
   private readonly expenses = inject(ExpenseService);
   private readonly fb = inject(NonNullableFormBuilder);
+
+  /** Emitido quando a API confirma o registro de um gasto. */
+  readonly created = output<Expense>();
 
   protected readonly categories = EXPENSE_CATEGORIES;
   protected readonly submitting = signal(false);
@@ -76,6 +79,7 @@ export class ExpenseForm {
         this.submitting.set(false);
         this.confirmation.set(`Gasto registrado: ${expense.description} — ${formatBrl(expense.amount)}`);
         this.resetForm();
+        this.created.emit(expense);
       },
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
