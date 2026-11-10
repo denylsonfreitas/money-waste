@@ -12,8 +12,9 @@ caminho dos arquivos e o que se espera da resposta.
 2. Se houver um PR aberto do time ainda não mergeado, **não comece outra história**:
    escreva só a daily registrando que o time aguarda revisão e pare.
 3. **PO** → escolhe ou refina a história. Crie a branch `feat/<ID>-<slug>`.
-4. **Dev** → implementa.
-5. **QA** → verifica. Se REPROVADO, volte ao Dev com o relatório (máximo 2 voltas).
+4. **Dev** → implementa. Commite, faça push e abra o PR como **rascunho (draft)** para o
+   CI rodar os testes .NET enquanto a QA revisa.
+5. **QA** → verifica (inclui o resultado do CI do PR). Se REPROVADO, volte ao Dev com o relatório (máximo 2 voltas).
    Na terceira reprovação, peça ao PO para dividir a história, registre na daily e abra
    o PR como rascunho (draft).
 6. **Tech Writer** → atualiza a documentação.
