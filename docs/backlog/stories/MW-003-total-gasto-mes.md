@@ -1,6 +1,6 @@
 # MW-003 — Ver o total gasto no mês
 
-**Status:** Em andamento
+**Status:** Concluída (aguardando merge)
 **Sprint:** 1
 **Prioridade:** 3
 
