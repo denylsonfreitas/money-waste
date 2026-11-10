@@ -1,6 +1,6 @@
 # MW-001 — Registrar um gasto
 
-**Status:** Concluída (aguardando merge)
+**Status:** Entregue
 **Sprint:** 1
 **Prioridade:** 1
 
