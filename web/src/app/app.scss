@@ -1,0 +1,32 @@
+.page {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+header {
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--mw-accent);
+}
+
+.tagline {
+  margin: 0.25rem 0 0;
+  color: var(--mw-muted);
+}
+
+.card {
+  padding: 1.25rem;
+  border: 1px solid var(--mw-border);
+  border-radius: 0.75rem;
+  background: var(--mw-surface);
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}

@@ -90,3 +90,10 @@ O Dev decide como cada categoria é representada no código e no contrato da API
 - Datas exibidas no formato brasileiro (dd/mm/aaaa).
 - Mensagens ao usuário em português.
 - Poucos campos e bons padrões: registrar tem que ser mais rápido que esquecer.
+
+## Decisões do Dev
+- Persistência em memória (`ExpenseStore` singleton com `ConcurrentDictionary`) até a MW-007; nenhuma dependência nova.
+- Categorias no contrato da API como códigos em inglês minúsculos (`food`, `transport`, `housing`, `health`, `leisure`, `education`, `shopping`, `other`); rótulos em português só no front.
+- Erros de validação da API no formato *problem details* (`Results.ValidationProblem`), com mensagens em português por campo em `errors`.
+- "Hoje" na API vem de `TimeProvider` injetado (data local do servidor), para os testes fixarem o relógio; o front envia sempre a data do formulário (data local do navegador).
+- URL base da API no front centralizada no token `API_BASE_URL` (`web/src/app/api.config.ts`).
