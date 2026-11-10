@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { Expense } from './expense.model';
+import { CategoryTotal, Expense } from './expense.model';
 import { ExpenseService } from './expense.service';
 
 describe('ExpenseService', () => {
@@ -72,5 +72,21 @@ describe('ExpenseService', () => {
     req.flush({ total: 158.4 });
 
     expect(result).toBe(158.4);
+  });
+
+  it('busca os totais por categoria do mês atual com GET em /api/expenses/totals-by-category', () => {
+    const totals: CategoryTotal[] = [
+      { category: 'housing', total: 100 },
+      { category: 'food', total: 58.4 },
+    ];
+    let result: CategoryTotal[] | undefined;
+
+    service.currentMonthTotalsByCategory().subscribe((list) => (result = list));
+
+    const req = http.expectOne('http://localhost:5215/api/expenses/totals-by-category');
+    expect(req.request.method).toBe('GET');
+    req.flush(totals);
+
+    expect(result).toEqual(totals);
   });
 });

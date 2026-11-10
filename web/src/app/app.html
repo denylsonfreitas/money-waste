@@ -6,11 +6,16 @@
 
   <section class="card" aria-labelledby="new-expense-title">
     <h2 id="new-expense-title">Novo gasto</h2>
-    <app-expense-form (created)="total.reload(); list.reload()" />
+    <app-expense-form (created)="total.reload(); categories.reload(); list.reload()" />
   </section>
 
   <section class="card" aria-label="Total do mês">
     <app-expense-total #total />
+  </section>
+
+  <section class="card" aria-labelledby="category-totals-title">
+    <h2 id="category-totals-title">Gastos por categoria</h2>
+    <app-category-totals #categories />
   </section>
 
   <section class="card" aria-labelledby="month-expenses-title">

@@ -6,8 +6,9 @@ namespace MoneyWaste.Api.Features.Expenses;
 /// </summary>
 public static class ExpenseCategories
 {
-    public static readonly IReadOnlySet<string> All = new HashSet<string>(StringComparer.Ordinal)
-    {
+    /// <summary>Na ordem da lista fixa; é o critério de desempate dos totais por categoria (MW-004).</summary>
+    public static readonly IReadOnlyList<string> Ordered =
+    [
         "food",       // Alimentação
         "transport",  // Transporte
         "housing",    // Moradia
@@ -16,5 +17,7 @@ public static class ExpenseCategories
         "education",  // Educação
         "shopping",   // Compras
         "other",      // Outros
-    };
+    ];
+
+    public static readonly IReadOnlySet<string> All = new HashSet<string>(Ordered, StringComparer.Ordinal);
 }

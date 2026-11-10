@@ -91,3 +91,6 @@
 - Sugestão do revisor (Rafa, PR #4), para o Dev avaliar: este é o terceiro componente com o
   mesmo padrão de carregamento/erro/`reload()`; vale reavaliar extrair esse padrão, desde que
   o PR continue pequeno.
+
+## Decisões do Dev
+- Totais por categoria em endpoint próprio `GET /api/expenses/totals-by-category` → `[{ "category": "<código>", "total": <decimal> }]`, calculado sobre `CurrentMonth.Expenses` (mesmos gastos da lista e do total). A lista fixa de categorias passou a ter ordem explícita (`ExpenseCategories.Ordered`), usada no desempate. O padrão carregando/erro/`reload()` do front não foi extraído nesta história para manter o PR pequeno. Sem dependência nova.
