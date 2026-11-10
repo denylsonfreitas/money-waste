@@ -20,6 +20,9 @@ para o registrado primeiro.
 
 Cada item tem o mesmo formato da resposta `201` do `POST /api/expenses`.
 
+> **Atenção:** `amount` não sai com 2 casas fixas: um gasto criado com `"amount": 5` volta
+> como `5`, não `5.00` (igual ao `POST`). Valor sempre com 2 casas é a MW-009.
+
 ### **200 OK** (com gastos)
 ```json
 [

@@ -1,6 +1,6 @@
 # ADR 0002 — Gastos em memória até a MW-007
 
-**Status:** Aceita · **Data:** 2026-11-09 · **História:** MW-001
+**Status:** Aceita, estrutura do store alterada pela [ADR 0007](0007-store-em-lista-com-ordem-de-registro.md) · **Data:** 2026-11-09 · **História:** MW-001
 
 ## Contexto
 A MW-001 precisa criar gastos, mas persistência real entre reinícios é a MW-007.

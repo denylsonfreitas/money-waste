@@ -6,7 +6,7 @@ Mantido pela PO (Marina). Ordem = prioridade. Status: `Ideia` → `Pronta` → `
 | ID | História | Status |
 |---|---|---|
 | MW-001 | [Registrar um gasto (valor, descrição, categoria, data)](stories/MW-001-registrar-gasto.md) | Entregue |
-| MW-002 | [Listar os gastos do mês atual](stories/MW-002-listar-gastos-mes.md) | Em andamento |
+| MW-002 | [Listar os gastos do mês atual](stories/MW-002-listar-gastos-mes.md) | Concluída (aguardando merge) |
 | MW-003 | Ver o total gasto no mês | Ideia |
 | MW-004 | Ver o total por categoria | Ideia |
 | MW-009 | Endurecer a validação do registro de gasto (mensagens em português para JSON malformado e tipo errado, valor máximo, limite da descrição, valor sempre com 2 casas na resposta) | Ideia |
@@ -21,4 +21,4 @@ Histórias detalhadas ficam em `docs/backlog/stories/`.
 Itens pequenos, sem comportamento visível ao usuário. O Dev pode resolver junto de qualquer
 história que mexa no mesmo arquivo, em commit `chore:` separado.
 
-- `api/**/launchSettings.json` ainda aponta `launchUrl` para `weatherforecast` (resto do template). Origem: daily de 09/11/2026 (MW-001).
+Nenhum no momento.

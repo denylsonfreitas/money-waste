@@ -66,14 +66,17 @@ claude            # abra o Claude Code na pasta
 
 - **Registrar um gasto** (MW-001) — valor, descrição, categoria e data (hoje por padrão).
   Os gastos ficam em memória por enquanto: somem quando a API reinicia.
+- **Listar os gastos do mês atual** (MW-002) — abaixo do formulário, do mais recente para o
+  mais antigo, com data, descrição, categoria e valor. Atualiza depois de cada registro.
 
-Próximas: listar os gastos do mês, totais e mais. Acompanhe o [backlog](docs/backlog/BACKLOG.md).
+Próximas: total do mês, total por categoria e mais. Acompanhe o [backlog](docs/backlog/BACKLOG.md).
 
 ## 🔌 Endpoints
 
 | Método | Rota | O que faz |
 |---|---|---|
 | `GET` | `/api/health` | Verifica se a API está no ar |
+| `GET` | `/api/expenses` | Lista os gastos do mês atual |
 | `POST` | `/api/expenses` | Registra um gasto |
 
 Corpo, respostas e exemplos em [`docs/api.md`](docs/api.md).
