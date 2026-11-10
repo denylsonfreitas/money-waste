@@ -64,4 +64,16 @@ claude            # abra o Claude Code na pasta
 
 ## 📌 Funcionalidades
 
-Ainda nenhuma — o time está começando. Acompanhe o [backlog](docs/backlog/BACKLOG.md).
+- **Registrar um gasto** (MW-001) — valor, descrição, categoria e data (hoje por padrão).
+  Os gastos ficam em memória por enquanto: somem quando a API reinicia.
+
+Próximas: listar os gastos do mês, totais e mais. Acompanhe o [backlog](docs/backlog/BACKLOG.md).
+
+## 🔌 Endpoints
+
+| Método | Rota | O que faz |
+|---|---|---|
+| `GET` | `/api/health` | Verifica se a API está no ar |
+| `POST` | `/api/expenses` | Registra um gasto |
+
+Corpo, respostas e exemplos em [`docs/api.md`](docs/api.md).

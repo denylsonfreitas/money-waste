@@ -1,0 +1,84 @@
+.expense-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input,
+select {
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--mw-border);
+  border-radius: 0.5rem;
+  background: var(--mw-surface);
+  color: var(--mw-text);
+
+  &:focus {
+    outline: 2px solid var(--mw-accent);
+    outline-offset: 1px;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--mw-danger);
+  }
+}
+
+.money {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  span {
+    color: var(--mw-muted);
+    font-weight: 600;
+  }
+}
+
+.error {
+  margin: 0;
+  color: var(--mw-danger);
+  font-size: 0.85rem;
+}
+
+button {
+  font: inherit;
+  font-weight: 700;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--mw-accent);
+  color: #fff;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+.feedback {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+
+  &.success {
+    background: var(--mw-success-bg);
+    color: var(--mw-success);
+  }
+
+  &.failure {
+    background: var(--mw-danger-bg);
+    color: var(--mw-danger);
+  }
+}

@@ -4,3 +4,15 @@ GET {{MoneyWaste.Api_HostAddress}}/api/health
 Accept: application/json
 
 ###
+
+POST {{MoneyWaste.Api_HostAddress}}/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 45.90,
+  "description": "Almoço",
+  "category": "food",
+  "date": "2026-11-05"
+}
+
+###

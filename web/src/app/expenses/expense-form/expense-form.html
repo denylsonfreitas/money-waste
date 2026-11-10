@@ -1,0 +1,53 @@
+<form class="expense-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="field">
+    <label for="amount">Valor</label>
+    <div class="money">
+      <span aria-hidden="true">R$</span>
+      <input id="amount" type="number" inputmode="decimal" step="0.01" min="0.01"
+             placeholder="0,00" formControlName="amount"
+             [attr.aria-invalid]="showErrors('amount')" aria-describedby="amount-error" />
+    </div>
+    @if (showErrors('amount')) {
+      <p class="error" id="amount-error" data-testid="amount-error">{{ amountError() }}</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="description">Descrição</label>
+    <input id="description" type="text" placeholder="Ex.: Almoço" formControlName="description"
+           [attr.aria-invalid]="showErrors('description')" aria-describedby="description-error" />
+    @if (showErrors('description')) {
+      <p class="error" id="description-error" data-testid="description-error">A descrição é obrigatória.</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="category">Categoria</label>
+    <select id="category" formControlName="category"
+            [attr.aria-invalid]="showErrors('category')" aria-describedby="category-error">
+      <option value="" disabled>Selecione…</option>
+      @for (category of categories; track category.value) {
+        <option [value]="category.value">{{ category.label }}</option>
+      }
+    </select>
+    @if (showErrors('category')) {
+      <p class="error" id="category-error" data-testid="category-error">Escolha uma categoria.</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="date">Data</label>
+    <input id="date" type="date" formControlName="date" />
+  </div>
+
+  <button type="submit" [disabled]="submitting()">
+    {{ submitting() ? 'Registrando…' : 'Registrar' }}
+  </button>
+
+  @if (confirmation(); as message) {
+    <p class="feedback success" role="status" data-testid="confirmation">{{ message }}</p>
+  }
+  @if (errorMessage(); as message) {
+    <p class="feedback failure" role="alert" data-testid="submit-error">{{ message }}</p>
+  }
+</form>
