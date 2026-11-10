@@ -1,6 +1,6 @@
 # ADR 0001 — Desenvolvimento por um time de agentes no Claude Code
 
-**Status:** Aceita · **Data:** 2026-11-09
+**Status:** Aceita, atualizada pela [ADR 0008](0008-escala-revisor-e-ferias.md) (agora o revisor faz o merge) · **Data:** 2026-11-09
 
 ## Contexto
 O projeto é um experimento de portfólio: um time Scrum de agentes de IA desenvolve um produto

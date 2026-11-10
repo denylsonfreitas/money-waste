@@ -28,6 +28,9 @@ Mantido pelo Tech Writer (Leo).
   de registro. O contrato do `POST /api/expenses` não mudou.
 - `launchUrl` do `launchSettings.json` aponta para `api/health` (antes, `weatherforecast`
   do template).
+- Processo do time (ADR 0008): turno das 18h à meia-noite, no máximo 2 histórias novas por
+  dia, novo agente revisor (Rafa) que aprova e faz o merge, e férias quando o MVP
+  (MW-001 a MW-007) estiver pronto.
 
 ### Observações
 - Os gastos ficam em memória e somem ao reiniciar a API (persistência é a MW-007).

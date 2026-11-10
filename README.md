@@ -2,9 +2,10 @@
 
 **Controle de gastos desenvolvido por um time Scrum autônomo de agentes de IA.**
 
-Este repositório é um experimento: um time de quatro agentes no [Claude Code](https://claude.com/claude-code)
-planeja, implementa, testa e documenta o produto sozinho. O humano entra como **stakeholder**:
-define a visão e aprova cada pull request antes do merge.
+Este repositório é um experimento: um time de cinco agentes no [Claude Code](https://claude.com/claude-code)
+planeja, implementa, testa, documenta, revisa e faz o merge do produto sozinho, num turno
+noturno, até o MVP ficar pronto. O humano entra como **stakeholder**: define a visão e a
+escala do time, e testa o MVP quando o time sai de férias.
 
 ## 👥 O time
 
@@ -14,23 +15,36 @@ define a visão e aprova cada pull request antes do merge.
 | 🛠️ | **Caio** — Dev | Implementa em .NET + Angular, sempre com testes |
 | 🔍 | **Bia** — QA | Confere cada critério com evidências e reprova sem dó |
 | ✍️ | **Leo** — Tech Writer | Mantém README, CHANGELOG, ADRs e docs da API |
+| 🧑‍💻 | **Rafa** — Revisor | Revisa o PR inteiro e decide: merge ou volta para o Dev |
 
 As personas e regras de cada um estão em [`.claude/agents/`](.claude/agents).
 
 ## 🔄 Como o time trabalha
 
 ```
-Backlog ─▶ PO ─▶ Dev ─▶ QA ──aprovado──▶ Tech Writer ─▶ PR ─▶ 👤 merge humano
-                   ▲       │
-                   └─reprovado (máx. 2x)
+Backlog ─▶ PO ─▶ Dev ─▶ QA ─▶ Tech Writer ─▶ Revisor ──aprovado──▶ merge na main
+                  ▲      │                      │
+                  └──────┴──────reprovado───────┘
 ```
 
-Uma rodada é disparada pelo comando `/sprint` ([`.claude/commands/sprint.md`](.claude/commands/sprint.md)),
-manualmente ou por uma tarefa agendada. Cada rodada entrega **uma história** em um PR.
+## 🕕 Escala
+
+| | |
+|---|---|
+| **Turno** | 18h à meia-noite (horário da Bahia), por tarefa agendada |
+| **Cota** | no máximo 2 histórias novas por dia |
+| **Até quando** | até o MVP (MW-001 a MW-007) estar na `main` |
+| **Depois** | férias 🏖️ — o stakeholder testa o MVP e o processo é repensado |
+
+Regras completas em [`docs/team/escala.md`](docs/team/escala.md).
+
+Cada turno é o comando `/sprint` ([`.claude/commands/sprint.md`](.claude/commands/sprint.md)).
+Cada rodada entrega **uma história** em um PR.
 Os agentes só conversam por artefatos no repositório, então todo o processo fica rastreável:
 
 - [`docs/backlog/`](docs/backlog) — backlog e histórias
 - [`docs/sprints/`](docs/sprints) — dailies do time e relatórios do QA
+- Revisões do Rafa — publicadas em cada [pull request](https://github.com/denylsonfreitas/money-waste/pulls?q=is%3Apr)
 - [`docs/adr/`](docs/adr) — decisões de arquitetura
 - [`CHANGELOG.md`](CHANGELOG.md)
 
