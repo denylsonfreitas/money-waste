@@ -28,6 +28,15 @@ Mantido pelo Tech Writer (Leo).
 - "Total do mês: R$ 1.234,56" no front, entre o formulário e a lista. Atualiza depois de cada
   registro. Se a API falhar, mostra "Não foi possível carregar o total do mês." (nunca R$ 0,00).
 - ADR 0009: total do mês em endpoint próprio, com a regra de mês atual compartilhada.
+- Total por categoria (MW-004): `GET /api/expenses/totals-by-category` devolve
+  `[{"category": "<código>", "total": <número>}]` com os mesmos gastos da lista e do total do
+  mês. Só categorias com gasto; maior total primeiro e, no empate, a ordem da lista fixa de
+  categorias. Sem gastos, `200` com `[]`.
+- Seção "Gastos por categoria" no front, entre o "Total do mês" e a lista: uma linha por
+  categoria ("Alimentação — R$ 58,40"), na ordem da API. Atualiza depois de cada registro.
+  Mensagens "Nenhum gasto neste mês." e "Não foi possível carregar os gastos por categoria.".
+- ADR 0010: totais por categoria em endpoint próprio, com desempate pela ordem fixa das
+  categorias.
 
 ### Alterado
 - `ExpenseStore` trocou o `ConcurrentDictionary` por `List` com `lock`, para guardar a ordem
@@ -39,9 +48,12 @@ Mantido pelo Tech Writer (Leo).
   (MW-001 a MW-007) estiver pronto.
 - A regra de "mês atual" saiu de `ListCurrentMonthExpenses` para `CurrentMonth.Expenses`, usada
   pela lista e pelo total. O comportamento do `GET /api/expenses` não mudou.
+- `ExpenseCategories` ganhou a lista ordenada `Ordered`; `All` passou a ser derivado dela.
+  As categorias aceitas no `POST /api/expenses` não mudaram.
 
 ### Observações
 - Os gastos ficam em memória e somem ao reiniciar a API (persistência é a MW-007).
 - O mês atual da lista vem da data do servidor; a data do formulário vem do navegador. Com
   fusos diferentes, perto da virada do mês, um gasto pode não aparecer na lista (nem no total).
-- O `total` não sai com 2 casas fixas (`0`, `0.30`, `158.40`), igual ao `amount`.
+- O `total` não sai com 2 casas fixas (`0`, `0.30`, `158.40`), igual ao `amount`. Vale também
+  para o `total` de cada categoria.

@@ -8,7 +8,7 @@ Mantido pela PO (Marina). Ordem = prioridade. Status: `Ideia` → `Pronta` → `
 | MW-001 | [Registrar um gasto (valor, descrição, categoria, data)](stories/MW-001-registrar-gasto.md) | Entregue |
 | MW-002 | [Listar os gastos do mês atual](stories/MW-002-listar-gastos-mes.md) | Entregue |
 | MW-003 | [Ver o total gasto no mês](stories/MW-003-total-gasto-mes.md) | Entregue |
-| MW-004 | [Ver o total por categoria](stories/MW-004-total-por-categoria.md) | Em andamento |
+| MW-004 | [Ver o total por categoria](stories/MW-004-total-por-categoria.md) | Concluída (aguardando merge) |
 | MW-009 | Endurecer a validação do registro de gasto (mensagens em português para JSON malformado e tipo errado, valor máximo, limite da descrição, valores sempre com 2 casas na resposta — `amount`, `total` e totais por categoria —, teste de que POST inválido não altera o total, e o front tratar resposta malformada como `{}` sem mostrar "R$ NaN") | Ideia |
 | MW-005 | Editar e excluir um gasto | Ideia |
 | MW-006 | Comparar o mês atual com o anterior | Ideia |

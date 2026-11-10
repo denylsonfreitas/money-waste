@@ -84,8 +84,11 @@ claude            # abra o Claude Code na pasta
   mais antigo, com data, descrição, categoria e valor. Atualiza depois de cada registro.
 - **Ver o total gasto no mês** (MW-003) — "Total do mês: R$ 1.234,56", entre o formulário e a
   lista. É a soma dos mesmos gastos da lista e atualiza depois de cada registro.
+- **Ver o total por categoria** (MW-004) — seção "Gastos por categoria", entre o total e a
+  lista: "Alimentação — R$ 58,40", da categoria que mais gastou para a que menos. Só mostra
+  categorias com gasto no mês e atualiza depois de cada registro.
 
-Próximas: total por categoria e mais. Acompanhe o [backlog](docs/backlog/BACKLOG.md).
+Próximas histórias: acompanhe o [backlog](docs/backlog/BACKLOG.md).
 
 ## 🔌 Endpoints
 
@@ -94,6 +97,7 @@ Próximas: total por categoria e mais. Acompanhe o [backlog](docs/backlog/BACKLO
 | `GET` | `/api/health` | Verifica se a API está no ar |
 | `GET` | `/api/expenses` | Lista os gastos do mês atual |
 | `GET` | `/api/expenses/total` | Devolve o total gasto no mês atual |
+| `GET` | `/api/expenses/totals-by-category` | Devolve o total de cada categoria no mês atual |
 | `POST` | `/api/expenses` | Registra um gasto |
 
 Corpo, respostas e exemplos em [`docs/api.md`](docs/api.md).

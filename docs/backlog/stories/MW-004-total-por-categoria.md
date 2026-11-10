@@ -1,6 +1,6 @@
 # MW-004 — Ver o total por categoria
 
-**Status:** Em andamento
+**Status:** Concluída (aguardando merge)
 **Sprint:** 1
 **Prioridade:** 4
 

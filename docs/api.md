@@ -72,6 +72,38 @@ Sem gastos no mês atual, o total é `0` (nunca `404` nem erro).
 {"total":0}
 ```
 
+## `GET /api/expenses/totals-by-category`
+Devolve o **total gasto em cada categoria no mês atual**. Usa os **mesmos gastos** do
+`GET /api/expenses` e do `GET /api/expenses/total` (`CurrentMonth.Expenses`), então a soma dos
+itens é igual ao total do mês. Não há parâmetros.
+
+- Só aparecem categorias **com gasto** no mês. Nenhum item vem com `0`.
+- `category` é o código da categoria (tabela em `POST /api/expenses`), não o rótulo.
+- **Ordem:** maior `total` primeiro. Empate: ordem da lista fixa de categorias
+  (`food`, `transport`, `housing`, `health`, `leisure`, `education`, `shopping`, `other`).
+- Soma em `decimal`, exata em centavos (`0.10 + 0.20` dá `0.30`).
+
+> **Atenção:** `total` não sai com 2 casas fixas; as casas acompanham os valores somados
+> (ex.: `58.40`, mas pode vir `100` se o gasto foi criado com `"amount": 100`). Valor sempre
+> com 2 casas é a MW-009.
+
+### **200 OK** (com gastos)
+Gastos no mês atual de R$ 45,90 e R$ 12,50 (`food`), R$ 100,00 (`housing`) e R$ 8,00
+(`transport`):
+```json
+[
+  { "category": "housing", "total": 100.00 },
+  { "category": "food", "total": 58.40 },
+  { "category": "transport", "total": 8.00 }
+]
+```
+
+### **200 OK** (nenhum gasto no mês)
+Sem gastos no mês atual, a resposta é uma lista vazia (nunca `404` nem erro).
+```json
+[]
+```
+
 ## `POST /api/expenses`
 Registra um gasto. Nesta versão os gastos ficam **em memória** (somem ao reiniciar a API).
 
