@@ -79,3 +79,6 @@
   (ex.: R$ 1.234,56), igual à lista da MW-002.
 - "Mês atual" e "hoje" seguem exatamente a regra da MW-002.
 - Mensagens ao usuário em português.
+
+## Decisões do Dev
+- Total do mês em endpoint próprio `GET /api/expenses/total` → `{ "total": <decimal> }`; a regra de "mês atual" foi extraída para `CurrentMonth.Expenses` e é usada pela lista e pelo total, garantindo que somam os mesmos gastos. Soma em `decimal` (centavos exatos). Sem dependência nova.

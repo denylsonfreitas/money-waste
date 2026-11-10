@@ -61,4 +61,16 @@ describe('ExpenseService', () => {
 
     expect(result).toEqual(expenses);
   });
+
+  it('busca o total do mês atual com GET em /api/expenses/total e devolve o número', () => {
+    let result: number | undefined;
+
+    service.currentMonthTotal().subscribe((total) => (result = total));
+
+    const req = http.expectOne('http://localhost:5215/api/expenses/total');
+    expect(req.request.method).toBe('GET');
+    req.flush({ total: 158.4 });
+
+    expect(result).toBe(158.4);
+  });
 });
