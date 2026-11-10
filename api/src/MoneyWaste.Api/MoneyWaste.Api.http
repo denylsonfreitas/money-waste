@@ -16,3 +16,8 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{MoneyWaste.Api_HostAddress}}/api/expenses
+Accept: application/json
+
+###

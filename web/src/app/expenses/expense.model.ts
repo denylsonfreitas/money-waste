@@ -20,6 +20,11 @@ export const EXPENSE_CATEGORIES: readonly { value: ExpenseCategory; label: strin
   { value: 'other', label: 'Outros' },
 ];
 
+/** Rótulo em português de um código de categoria (ex.: "food" → "Alimentação"). */
+export function categoryLabel(category: ExpenseCategory): string {
+  return EXPENSE_CATEGORIES.find((c) => c.value === category)?.label ?? category;
+}
+
 export interface CreateExpenseRequest {
   amount: number;
   description: string;

@@ -45,4 +45,20 @@ describe('ExpenseService', () => {
 
     expect(result).toEqual(created);
   });
+
+  it('busca os gastos do mês atual com GET em /api/expenses', () => {
+    const expenses: Expense[] = [
+      { id: 'b', amount: 10, description: 'Café', category: 'food', date: '2026-11-07' },
+      { id: 'a', amount: 20, description: 'Ônibus', category: 'transport', date: '2026-11-03' },
+    ];
+    let result: Expense[] | undefined;
+
+    service.listCurrentMonth().subscribe((list) => (result = list));
+
+    const req = http.expectOne('http://localhost:5215/api/expenses');
+    expect(req.request.method).toBe('GET');
+    req.flush(expenses);
+
+    expect(result).toEqual(expenses);
+  });
 });

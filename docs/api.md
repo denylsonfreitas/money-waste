@@ -10,6 +10,42 @@ Verifica se a API está no ar.
 { "status": "ok" }
 ```
 
+## `GET /api/expenses`
+Lista os gastos do **mês atual**: do dia 1 ao último dia do mês da data de hoje (do servidor).
+O que conta é a **data do gasto** (`date`), não o momento em que ele foi registrado. Gastos de
+outros meses não aparecem. Não há parâmetros nem paginação.
+
+**Ordem:** data mais recente primeiro. Gastos com a mesma data vêm do registrado por último
+para o registrado primeiro.
+
+Cada item tem o mesmo formato da resposta `201` do `POST /api/expenses`.
+
+### **200 OK** (com gastos)
+```json
+[
+  {
+    "id": "c1d7e0b2-5f4a-4c39-9a51-2b8e6f0d3a17",
+    "amount": 12.50,
+    "description": "Ônibus",
+    "category": "transport",
+    "date": "2026-11-10"
+  },
+  {
+    "id": "7a257d49-3872-47b0-8662-a63d58df8a27",
+    "amount": 45.90,
+    "description": "Almoço",
+    "category": "food",
+    "date": "2026-11-05"
+  }
+]
+```
+
+### **200 OK** (nenhum gasto no mês)
+Sem gastos no mês atual, a resposta é uma lista vazia (nunca `404`).
+```json
+[]
+```
+
 ## `POST /api/expenses`
 Registra um gasto. Nesta versão os gastos ficam **em memória** (somem ao reiniciar a API).
 

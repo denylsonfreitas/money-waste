@@ -78,3 +78,8 @@
 - Datas exibidas no formato brasileiro (dd/mm/aaaa).
 - "Hoje" segue a mesma regra da MW-001 (o Dev já decidiu como; ver decisões da MW-001).
 - Mensagens ao usuário em português.
+
+## Decisões do Dev
+- `GET /api/expenses` devolve o mês atual já filtrado e ordenado pela API (mês calculado com o mesmo `TimeProvider` da MW-001); o front só exibe e não refaz filtro nem ordenação.
+- `ExpenseStore` passou de `ConcurrentDictionary` para `List` com `lock`, para guardar a ordem de registro (critério de desempate na mesma data) sem criar campo novo no contrato.
+- Depois de um registro bem-sucedido, o formulário emite `created` e a tela busca a lista de novo na API (sem inserir o item localmente), para o "mês atual" e a ordem terem uma única fonte de verdade.

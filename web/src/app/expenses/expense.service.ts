@@ -13,4 +13,9 @@ export class ExpenseService {
   create(request: CreateExpenseRequest): Observable<Expense> {
     return this.http.post<Expense>(`${this.baseUrl}/api/expenses`, request);
   }
+
+  /** Gastos do mês atual, já na ordem de exibição (mais recente primeiro). */
+  listCurrentMonth(): Observable<Expense[]> {
+    return this.http.get<Expense[]>(`${this.baseUrl}/api/expenses`);
+  }
 }
