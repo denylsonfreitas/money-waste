@@ -20,8 +20,19 @@ repositório. Só responda o motivo.
 3. Leia a daily mais recente em `docs/sprints/`.
 
 ## 1. Existe trabalho pela metade? Termine primeiro
-Liste os PRs abertos e as branches `feat/*` e `chore/*` sem PR. Ignore os PRs com a label
-`precisa-stakeholder`. Para os demais, retome a partir do que falta:
+Liste os PRs abertos e as branches `feat/*` e `chore/*` **sem PR**. Ignore os PRs com a
+label `precisa-stakeholder`.
+
+"Sem PR" quer dizer **nenhum PR em nenhum estado** (aberto, fechado ou mergeado) com aquela
+branch como `head`. Branches já mergeadas ou fechadas continuam no remoto e **não** são
+trabalho pela metade:
+
+```bash
+gh api "repos/denylsonfreitas/money-waste/pulls?state=all&head=denylsonfreitas:<branch>" --jq length
+# 0 → branch sem PR (rodada interrompida). Qualquer outro valor → ignore a branch.
+```
+
+Para os demais, retome a partir do que falta:
 - **Branch sem PR** → abra o PR rascunho e siga do passo que ficou faltando.
 - **QA ainda não rodou, ou reprovou** (veja `docs/sprints/qa/<ID>.md`) → passo 4 ou 5.
 - **QA aprovou, docs ou daily faltando** → passo 6.

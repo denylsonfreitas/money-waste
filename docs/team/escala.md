@@ -23,11 +23,13 @@ do turno. A data no nome da daily usa esse mesmo valor.
 Antes de fazer qualquer coisa, o Scrum Master verifica se outro turno ainda está rodando.
 Como todo trabalho vive num PR aberto desde o primeiro commit (o PR rascunho abre logo
 depois da PO), considera-se que **há um turno ativo** se algum PR aberto foi atualizado há
-menos de **90 minutos** (push, comentário, revisão ou label atualizam o PR):
+menos de **90 minutos** (push, comentário, revisão ou label atualizam o PR). PRs com a
+label `precisa-stakeholder` não contam, porque estão parados esperando o stakeholder:
 
 ```bash
 gh api "repos/denylsonfreitas/money-waste/pulls?state=open" \
-  --jq '.[] | select((now - (.updated_at | fromdate)) < 5400) | .number'
+  --jq '.[] | select(any(.labels[]; .name == "precisa-stakeholder") | not)
+             | select((now - (.updated_at | fromdate)) < 5400) | .number'
 ```
 
 Se o comando imprimir algo, encerre o turno sem mudar nada. A trava vale só no início de
