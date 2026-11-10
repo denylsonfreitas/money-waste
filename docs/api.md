@@ -19,7 +19,7 @@ Registra um gasto. Nesta versão os gastos ficam **em memória** (somem ao reini
 | `amount` | número | sim | Em BRL, maior que zero, no máximo 2 casas decimais. |
 | `description` | texto | sim | Não pode ser vazio nem só espaços (espaços nas pontas são removidos). |
 | `category` | texto | sim | Um dos códigos da tabela abaixo. |
-| `date` | texto (`aaaa-mm-dd`) | não | Quando omitido, vale a data de hoje (do servidor). |
+| `date` | texto (`aaaa-mm-dd`) | não | Quando omitido, vazio ou só espaços, vale a data de hoje (do servidor). |
 
 | Código (`category`) | Rótulo exibido |
 |---|---|
@@ -81,3 +81,7 @@ Mensagens possíveis:
 | `description` | `A descrição é obrigatória.` |
 | `category` | `A categoria é inválida.` (ausente ou fora da lista) |
 | `date` | `A data é inválida. Use o formato aaaa-mm-dd.` |
+
+> **Atenção:** se o corpo não for um JSON válido ou um campo vier com tipo errado
+> (ex.: `"amount": "abc"`), a API responde **400 sem *problem details*** (corpo vazio em
+> Production). Isso acontece antes da validação acima.
