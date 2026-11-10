@@ -21,3 +21,8 @@ GET {{MoneyWaste.Api_HostAddress}}/api/expenses
 Accept: application/json
 
 ###
+
+GET {{MoneyWaste.Api_HostAddress}}/api/expenses/totals-by-category
+Accept: application/json
+
+###

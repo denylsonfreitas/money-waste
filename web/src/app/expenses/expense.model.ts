@@ -45,3 +45,9 @@ export interface Expense {
 export interface CurrentMonthTotal {
   total: number;
 }
+
+/** Item de GET /api/expenses/totals-by-category (MW-004). */
+export interface CategoryTotal {
+  category: ExpenseCategory;
+  total: number;
+}

@@ -1,0 +1,15 @@
+@if (failed()) {
+  <p class="message failure" role="alert" data-testid="category-totals-error">Não foi possível carregar os gastos por categoria.</p>
+} @else if (totals(); as list) {
+  @if (list.length) {
+    <ul class="category-totals" data-testid="category-totals">
+      @for (item of list; track item.category) {
+        <li class="category-total" data-testid="category-total">{{ categoryLabel(item.category) }} — {{ formatBrl(item.total) }}</li>
+      }
+    </ul>
+  } @else {
+    <p class="message" data-testid="category-totals-empty">Nenhum gasto neste mês.</p>
+  }
+} @else {
+  <p class="message" data-testid="category-totals-loading">Carregando…</p>
+}
