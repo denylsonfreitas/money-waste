@@ -33,9 +33,10 @@ Turno das 18h à meia-noite (`America/Bahia`), no máximo 2 histórias novas por
 (MW-001 a MW-007) ficar pronto. Depois, férias. Detalhes em **`docs/team/escala.md`**.
 
 ## Fluxo de um turno (`/sprint`)
-1. **Scrum Master** confere escala, férias, trabalho pela metade e cota do dia.
-2. **PO** escolhe a próxima história do MVP e a refina.
-3. **Dev** cria a branch `feat/<id>-<slug>`, implementa, escreve testes e abre o PR rascunho.
+1. **Scrum Master** confere escala, férias, trava de turno, trabalho pela metade e cota do dia.
+2. **PO** escolhe a próxima história do MVP e a refina. O Scrum Master cria a branch
+   `feat/<id>-<slug>` e abre o PR rascunho na hora.
+3. **Dev** implementa e escreve testes.
 4. **QA** roda `scripts/check.sh`, confere o CI e cada critério de aceite, e escreve o relatório.
    Se reprovar, o Dev corrige (no máximo 2 voltas; depois a história volta para o PO).
 5. **Tech Writer** atualiza a documentação.
@@ -47,7 +48,8 @@ Turno das 18h à meia-noite (`America/Bahia`), no máximo 2 histórias novas por
 - Todo comportamento novo vem com teste.
 - Código e identificadores em inglês; documentação e mensagens para o usuário em português.
 - `scripts/check.sh` precisa passar antes de abrir o PR.
-- Só o revisor faz merge, e só com o CI verde e a QA aprovada.
+- Só o revisor faz merge, e só com o CI verde e a QA aprovada. Exceção: PRs de processo ou
+  de férias (`chore/*`) não têm QA; o gate é CI verde + revisor.
 
 ## Git
 - Commits no padrão Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).

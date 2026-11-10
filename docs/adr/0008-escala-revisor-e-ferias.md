@@ -16,6 +16,15 @@ do Claude, para então testar o MVP e repensar o processo.
 - **MVP e férias:** quando MW-001 a MW-007 estiverem na `main`, o time publica as notas
   da versão `v0.1.0` e muda o status para `Férias` em `docs/team/escala.md`.
 
+- **Um turno por vez:** uma sessão nova encerra se algum PR aberto foi atualizado há menos
+  de 90 minutos, para dois turnos não trabalharem na mesma branch.
+- **Datas no fuso `America/Bahia`**, inclusive para a cota, mesmo com a sessão em UTC.
+- **Fonte única da cota:** PRs `feat/*` criados no dia. O PR rascunho abre logo depois do
+  commit da PO, então uma história interrompida também conta.
+- **Exceções:** PR travado depois de 3 reprovações do revisor recebe a label
+  `precisa-stakeholder` e os turnos não mexem nele; PRs de processo e de férias (`chore/*`)
+  passam só por CI e revisor.
+
 As regras ficam em `docs/team/escala.md`, que o Scrum Master lê no início de todo turno.
 
 ## Consequências

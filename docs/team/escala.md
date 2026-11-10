@@ -8,19 +8,48 @@ arquivo no início de **todo** turno, antes de qualquer outra coisa.
 
 Valores possíveis: `Trabalhando` ou `Férias`. Em `Férias`, nenhuma rodada começa.
 
+## Fuso e "hoje"
+Todas as datas e horas do time são de `America/Bahia` (UTC-3, sem horário de verão), mesmo
+que a sessão rode em UTC. "Hoje" é sempre `TZ=America/Bahia date +%F`, calculado no início
+do turno. A data no nome da daily usa esse mesmo valor.
+
 ## Horário
-- O turno vai das **18:00 às 23:59**, no horário de Brasília/Bahia (`America/Bahia`, UTC-3).
+- O turno vai das **18:00 às 23:59** (`America/Bahia`).
 - A tarefa agendada dispara três vezes por noite (por volta de 18h, 20h e 22h).
 - Uma rodada que já começou dentro do turno pode terminar depois da meia-noite. Uma rodada
   nova só começa dentro do turno.
 
+## Um turno por vez (trava)
+Antes de fazer qualquer coisa, o Scrum Master verifica se outro turno ainda está rodando.
+Como todo trabalho vive num PR aberto desde o primeiro commit (o PR rascunho abre logo
+depois da PO), considera-se que **há um turno ativo** se algum PR aberto foi atualizado há
+menos de **90 minutos** (push, comentário, revisão ou label atualizam o PR):
+
+```bash
+gh api "repos/denylsonfreitas/money-waste/pulls?state=open" \
+  --jq '.[] | select((now - (.updated_at | fromdate)) < 5400) | .number'
+```
+
+Se o comando imprimir algo, encerre o turno sem mudar nada. A trava vale só no início de
+uma sessão: o turno que já está trabalhando não se trava com os próprios commits.
+
 ## Cota diária
-- **No máximo 2 histórias iniciadas por dia.** Conta como iniciada toda história cuja branch
-  `feat/<ID>-...` foi criada naquele dia; corrigir um PR reprovado não gasta cota.
-- Para contar, o Scrum Master vê as dailies do dia em `docs/sprints/` cujo campo
-  `**Tipo:**` é `Nova história`.
-- Se o limite de uso do plano do Claude acabar no meio de uma rodada, a sessão para. O
-  próximo turno encontra a branch ou o PR pela metade e continua de onde parou.
+- **No máximo 2 histórias novas por dia.** A única fonte da contagem são os **PRs de
+  história** (`head` começando com `feat/`) **criados hoje**, mergeados ou não:
+
+  ```bash
+  HOJE=$(TZ=America/Bahia date +%F)
+  gh api "repos/denylsonfreitas/money-waste/pulls?state=all&per_page=100" \
+    --jq "[.[] | select(.head.ref | startswith(\"feat/\"))
+               | select((.created_at | fromdate) - 10800 | strftime(\"%Y-%m-%d\") == \"$HOJE\")]
+          | length"
+  ```
+
+- Por isso o PR rascunho é aberto **logo depois do commit da PO**: a história passa a contar
+  na cota no instante em que começa.
+- Retomar ou corrigir um PR que já existe não gasta cota.
+- Se o limite de uso do plano do Claude acabar no meio de uma rodada, a sessão para. Depois
+  que a trava de 90 minutos expira, o próximo turno retoma de onde parou.
 
 ## Escopo do MVP
 O MVP está pronto quando estas histórias estiverem **Entregues** (mergeadas na `main`):
@@ -35,17 +64,26 @@ O MVP está pronto quando estas histórias estiverem **Entregues** (mergeadas na
 | MW-006 | Comparar o mês atual com o anterior |
 | MW-007 | Persistir os gastos entre reinícios da API |
 
-Histórias fora dessa lista (como MW-008 e MW-009) ficam para depois do MVP. A PO pode
-reordenar as histórias do MVP entre si, mas não adiciona nem remove histórias da lista.
+- Histórias fora dessa lista (como MW-008 e MW-009) ficam para depois do MVP.
+- A PO pode reordenar as histórias do MVP entre si, mas não adiciona nem remove histórias.
+- **Divisão:** se uma história do MVP for dividida (depois da 3ª reprovação da QA), as partes
+  (`MW-00Xa`, `MW-00Xb`...) a substituem no MVP. A PO atualiza esta tabela.
+
+## Quando o time precisa do stakeholder
+Um PR com a label **`precisa-stakeholder`** está parado esperando o stakeholder. Os turnos
+não mexem nele: seguem com a próxima história do MVP que não dependa dele. Se todas as
+histórias restantes dependerem dele, o turno encerra.
 
 ## Férias
-Quando a última história do MVP for mergeada, o Scrum Master:
-1. Pede ao Tech Writer as notas de versão `v0.1.0` (MVP) no `CHANGELOG.md` e uma seção
+Quando a última história do MVP for mergeada, o Scrum Master abre a branch
+`chore/ferias-mvp` a partir da `main` e:
+1. Pede à PO que marque a última história como **Entregue** no backlog.
+2. Pede ao Tech Writer as notas de versão `v0.1.0` (MVP) no `CHANGELOG.md` e uma seção
    "Como testar o MVP" no `README.md`.
-2. Escreve `docs/sprints/ferias.md`: o que foi entregue, números do projeto (histórias,
+3. Escreve `docs/sprints/ferias.md`: o que foi entregue, números do projeto (histórias,
    PRs, reprovações da QA e do revisor) e o que o time sugere melhorar no processo.
-3. Muda o **Status** acima para `Férias`.
-4. Abre o PR dessas mudanças; o revisor revisa e faz o merge.
+4. Muda o **Status** acima para `Férias`.
+5. Abre o PR; o revisor revisa e faz o merge (regra de PR de processo, no `CLAUDE.md`).
 
 A partir daí os turnos só confirmam que o time está de férias e encerram. Quem tira o time
-de férias é o stakeholder.
+de férias é o stakeholder. Recomendação: pausar a tarefa agendada durante as férias.
