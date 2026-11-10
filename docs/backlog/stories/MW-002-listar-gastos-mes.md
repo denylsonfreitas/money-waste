@@ -1,6 +1,6 @@
 # MW-002 — Listar os gastos do mês atual
 
-**Status:** Concluída (aguardando merge)
+**Status:** Entregue
 **Sprint:** 1
 **Prioridade:** 2
 

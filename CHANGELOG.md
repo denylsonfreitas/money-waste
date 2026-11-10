@@ -22,6 +22,12 @@ Mantido pelo Tech Writer (Leo).
   categoria em português e valor em R$. Atualiza sozinha depois de cada registro. Mensagens
   "Nenhum gasto registrado neste mês." e "Não foi possível carregar os gastos do mês.".
 - ADRs 0006 e 0007: mês atual e ordem definidos pela API; store em lista com ordem de registro.
+- Total gasto no mês (MW-003): `GET /api/expenses/total` devolve `{"total": <número>}`, a soma
+  exata (em `decimal`) dos mesmos gastos do `GET /api/expenses`. Sem gastos, `200` com
+  `{"total":0}`.
+- "Total do mês: R$ 1.234,56" no front, entre o formulário e a lista. Atualiza depois de cada
+  registro. Se a API falhar, mostra "Não foi possível carregar o total do mês." (nunca R$ 0,00).
+- ADR 0009: total do mês em endpoint próprio, com a regra de mês atual compartilhada.
 
 ### Alterado
 - `ExpenseStore` trocou o `ConcurrentDictionary` por `List` com `lock`, para guardar a ordem
@@ -31,8 +37,11 @@ Mantido pelo Tech Writer (Leo).
 - Processo do time (ADR 0008): turno das 18h à meia-noite, no máximo 2 histórias novas por
   dia, novo agente revisor (Rafa) que aprova e faz o merge, e férias quando o MVP
   (MW-001 a MW-007) estiver pronto.
+- A regra de "mês atual" saiu de `ListCurrentMonthExpenses` para `CurrentMonth.Expenses`, usada
+  pela lista e pelo total. O comportamento do `GET /api/expenses` não mudou.
 
 ### Observações
 - Os gastos ficam em memória e somem ao reiniciar a API (persistência é a MW-007).
 - O mês atual da lista vem da data do servidor; a data do formulário vem do navegador. Com
-  fusos diferentes, perto da virada do mês, um gasto pode não aparecer na lista.
+  fusos diferentes, perto da virada do mês, um gasto pode não aparecer na lista (nem no total).
+- O `total` não sai com 2 casas fixas (`0`, `0.30`, `158.40`), igual ao `amount`.

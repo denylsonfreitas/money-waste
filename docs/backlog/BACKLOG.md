@@ -6,8 +6,8 @@ Mantido pela PO (Marina). Ordem = prioridade. Status: `Ideia` → `Pronta` → `
 | ID | História | Status |
 |---|---|---|
 | MW-001 | [Registrar um gasto (valor, descrição, categoria, data)](stories/MW-001-registrar-gasto.md) | Entregue |
-| MW-002 | [Listar os gastos do mês atual](stories/MW-002-listar-gastos-mes.md) | Concluída (aguardando merge) |
-| MW-003 | Ver o total gasto no mês | Ideia |
+| MW-002 | [Listar os gastos do mês atual](stories/MW-002-listar-gastos-mes.md) | Entregue |
+| MW-003 | [Ver o total gasto no mês](stories/MW-003-total-gasto-mes.md) | Concluída (aguardando merge) |
 | MW-004 | Ver o total por categoria | Ideia |
 | MW-009 | Endurecer a validação do registro de gasto (mensagens em português para JSON malformado e tipo errado, valor máximo, limite da descrição, valor sempre com 2 casas na resposta) | Ideia |
 | MW-005 | Editar e excluir um gasto | Ideia |

@@ -8,12 +8,6 @@ public static class ListCurrentMonthExpenses
         return app;
     }
 
-    private static IResult Handle(ExpenseStore store, TimeProvider clock)
-    {
-        var today = DateOnly.FromDateTime(clock.GetLocalNow().DateTime);
-        var firstDay = new DateOnly(today.Year, today.Month, 1);
-        var lastDay = firstDay.AddMonths(1).AddDays(-1);
-
-        return Results.Ok(store.ListBetween(firstDay, lastDay));
-    }
+    private static IResult Handle(ExpenseStore store, TimeProvider clock) =>
+        Results.Ok(CurrentMonth.Expenses(store, clock));
 }

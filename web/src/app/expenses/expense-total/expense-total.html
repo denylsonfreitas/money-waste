@@ -1,0 +1,7 @@
+@if (failed()) {
+  <p class="message failure" role="alert" data-testid="total-error">Não foi possível carregar o total do mês.</p>
+} @else if (total() !== null) {
+  <p class="total" data-testid="month-total">Total do mês: {{ formatBrl(total()!) }}</p>
+} @else {
+  <p class="message" data-testid="total-loading">Carregando…</p>
+}
