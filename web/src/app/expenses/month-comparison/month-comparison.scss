@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.previous,
+.difference {
+  margin: 0;
+}
+
+.difference {
+  color: var(--mw-muted);
+}
+
+.message {
+  margin: 0;
+  color: var(--mw-muted);
+
+  &.failure {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--mw-danger-bg);
+    color: var(--mw-danger);
+  }
+}

@@ -106,3 +106,6 @@
 - Mensagens ao usuário em português.
 - **Tamanho do PR:** a história deve caber em ~300 linhas de produção. Se o Dev perceber que não
   cabe, avise na daily antes da QA, e a PO divide em MW-006a (API) e MW-006b (tela).
+
+## Decisões do Dev
+- A comparação é um endpoint próprio, `GET /api/expenses/month-comparison`, que responde 200 com `{ currentMonthTotal, previousMonthTotal, difference }` (diferença = atual − anterior, em `decimal`), na linha das ADRs 0009/0010. O `CurrentMonth` ganhou `PreviousMonthExpenses` (mesmo "hoje" do `TimeProvider`, `AddMonths(-1)`, o que leva janeiro a dezembro do ano anterior), então o total atual da comparação usa exatamente os mesmos gastos do `GET /api/expenses/total`. No front, o novo componente `MonthComparison` fica na seção do total, logo abaixo do `ExpenseTotal`, e é recarregado pelo `refreshMonth()` do `App`; em erro mostra só a mensagem própria. Sem dependência nova.

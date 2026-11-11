@@ -20,6 +20,7 @@ app.MapDeleteExpense();
 app.MapListCurrentMonthExpenses();
 app.MapGetCurrentMonthTotal();
 app.MapGetCurrentMonthTotalsByCategory();
+app.MapGetMonthComparison();
 
 app.Run();
 

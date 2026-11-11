@@ -8,6 +8,7 @@ import { CategoryTotal, Expense } from './expenses/expense.model';
 const API_URL = 'http://localhost:5215/api/expenses';
 const TOTAL_URL = 'http://localhost:5215/api/expenses/total';
 const CATEGORIES_URL = 'http://localhost:5215/api/expenses/totals-by-category';
+const COMPARISON_URL = 'http://localhost:5215/api/expenses/month-comparison';
 
 describe('App', () => {
   let fixture: ComponentFixture<App>;
@@ -40,13 +41,28 @@ describe('App', () => {
 
   const shownTotal = () => byTestId('month-total')?.textContent?.trim();
 
-  function respondTotal(total: number): void {
+  function respondMonthTotal(total: number): void {
     http.expectOne({ method: 'GET', url: TOTAL_URL }).flush({ total });
     fixture.detectChanges();
   }
 
+  function respondComparison(currentMonthTotal: number, previousMonthTotal: number): void {
+    const difference = Math.round((currentMonthTotal - previousMonthTotal) * 100) / 100;
+    http.expectOne({ method: 'GET', url: COMPARISON_URL }).flush({ currentMonthTotal, previousMonthTotal, difference });
+    fixture.detectChanges();
+  }
+
+  /** Responde o total do mês e a comparação (MW-006), que são buscados juntos. */
+  function respondTotal(total: number, previousMonthTotal = total): void {
+    respondMonthTotal(total);
+    respondComparison(total, previousMonthTotal);
+  }
+
+  /** Falha de conexão: o total e a comparação (MW-006) falham juntos. */
   function failTotal(): void {
-    http.expectOne({ method: 'GET', url: TOTAL_URL }).error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' });
+    const offline = { status: 0, statusText: 'Unknown Error' };
+    http.expectOne({ method: 'GET', url: TOTAL_URL }).error(new ProgressEvent('error'), offline);
+    http.expectOne({ method: 'GET', url: COMPARISON_URL }).error(new ProgressEvent('error'), offline);
     fixture.detectChanges();
   }
 
@@ -398,6 +414,114 @@ describe('App', () => {
       respondTotal(63.4);
       respondCategories([]);
       respondList([lunch, bus]);
+    });
+  });
+
+  // MW-006
+  describe('comparar com o mês anterior', () => {
+    const lunch: Expense = { id: 'lunch', amount: 50, description: 'Almoço', category: 'food', date: '2026-11-05' };
+    const rent: Expense = { id: 'rent', amount: 100, description: 'Aluguel', category: 'housing', date: '2026-11-01' };
+    const shownPrevious = () => byTestId('previous-month-total')?.textContent?.trim();
+    const shownSentence = () => byTestId('month-difference')?.textContent?.trim();
+
+    // Critério 8
+    it('mostra as linhas da comparação logo abaixo do Total do mês, na mesma seção', () => {
+      respondTotal(150, 100);
+      respondCategories([]);
+      respondList([lunch, rent]);
+
+      expect(shownTotal()).toBe('Total do mês: R$ 150,00');
+      expect(shownPrevious()).toBe('Mês anterior: R$ 100,00');
+      expect(shownSentence()).toBe('R$ 50,00 a mais que no mês anterior.');
+
+      const total = el.querySelector('app-expense-total')!;
+      const comparison = el.querySelector('app-month-comparison')!;
+      expect(total.nextElementSibling).toBe(comparison);
+      expect(total.parentElement).toBe(comparison.parentElement);
+    });
+
+    // Critério 11 (excluir)
+    it('ao excluir um gasto do mês atual, a comparação se atualiza sem recarregar', () => {
+      spyOn(window, 'confirm').and.returnValue(true);
+      respondTotal(150, 100);
+      respondCategories([]);
+      respondList([lunch, rent]);
+
+      el.querySelector<HTMLButtonElement>('[data-testid="expense-item"] [data-testid="delete-expense"]')!.click();
+      fixture.detectChanges();
+      http.expectOne({ method: 'DELETE', url: `${API_URL}/lunch` }).flush(null, { status: 204, statusText: 'No Content' });
+      fixture.detectChanges();
+      respondTotal(100, 100);
+      respondCategories([]);
+      respondList([rent]);
+
+      expect(shownSentence()).toBe('Igual ao mês anterior.');
+    });
+
+    // Critério 11 (registrar)
+    it('ao registrar um gasto do mês atual, a comparação se atualiza sem recarregar', () => {
+      respondTotal(150, 100);
+      respondCategories([]);
+      respondList([lunch, rent]);
+
+      registerExpense('Café', '2026-11-06', '5.00');
+      respondTotal(155, 100);
+      respondCategories([]);
+      respondList([lunch, rent]);
+
+      expect(shownSentence()).toBe('R$ 55,00 a mais que no mês anterior.');
+    });
+
+    // Critério 11 (editar a data para o mês anterior)
+    it('ao editar um gasto para o mês anterior, os dois totais da comparação se atualizam', () => {
+      respondTotal(150, 100);
+      respondCategories([]);
+      respondList([lunch, rent]);
+
+      el.querySelector<HTMLButtonElement>('[data-testid="expense-item"] [data-testid="edit-expense"]')!.click();
+      fixture.detectChanges();
+      const date = el.querySelector<HTMLInputElement>('#date')!;
+      date.value = '2026-10-20';
+      date.dispatchEvent(new Event('input'));
+      el.querySelector<HTMLButtonElement>('app-expense-form button[type="submit"]')!.click();
+      fixture.detectChanges();
+      http.expectOne({ method: 'PUT', url: `${API_URL}/lunch` }).flush({ ...lunch, date: '2026-10-20' });
+      fixture.detectChanges();
+      respondTotal(100, 150);
+      respondCategories([]);
+      respondList([rent]);
+
+      expect(shownPrevious()).toBe('Mês anterior: R$ 150,00');
+      expect(shownSentence()).toBe('R$ 50,00 a menos que no mês anterior.');
+    });
+
+    // Critério 12
+    it('se a comparação falha, mostra a mensagem (nunca Igual ou R$ 0,00) e o resto da tela funciona', () => {
+      respondMonthTotal(150);
+      http
+        .expectOne({ method: 'GET', url: COMPARISON_URL })
+        .error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' });
+      fixture.detectChanges();
+      respondCategories([{ category: 'housing', total: 100 }, { category: 'food', total: 50 }]);
+      respondList([lunch, rent]);
+
+      expect(byTestId('comparison-error')?.textContent?.trim()).toBe(
+        'Não foi possível carregar a comparação com o mês anterior.',
+      );
+      expect(byTestId('previous-month-total')).toBeNull();
+      expect(el.textContent).not.toContain('Igual ao mês anterior.');
+      expect(el.textContent).not.toContain('R$ 0,00');
+      expect(shownTotal()).toBe('Total do mês: R$ 150,00');
+      expect(shownCategoryLines()).toEqual(['Moradia — R$ 100,00', 'Alimentação — R$ 50,00']);
+      expect(listedDescriptions()).toEqual(['Almoço', 'Aluguel']);
+
+      registerExpense('Café', '2026-11-06', '5.00');
+      expect(byTestId('confirmation')?.textContent?.trim()).toBe('Gasto registrado: Café — R$ 5,00');
+      respondTotal(155, 100);
+      respondCategories([]);
+      respondList([lunch, rent]);
+      expect(byTestId('comparison-error')).toBeNull();
+      expect(shownSentence()).toBe('R$ 55,00 a mais que no mês anterior.');
     });
   });
 });
