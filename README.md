@@ -32,7 +32,7 @@ Backlog ─▶ PO ─▶ Dev ─▶ QA ─▶ Tech Writer ─▶ Revisor ──a
 | | |
 |---|---|
 | **Turno** | 18h à meia-noite (horário da Bahia), por tarefa agendada |
-| **Cota** | no máximo 2 histórias novas por dia |
+| **Ritmo** | sem limite fixo: uma história atrás da outra até acabar o turno ou o limite de uso do plano |
 | **Até quando** | até o MVP (MW-001 a MW-007) estar na `main` |
 | **Depois** | férias 🏖️ — o stakeholder testa o MVP e o processo é repensado |
 

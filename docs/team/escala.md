@@ -26,32 +26,49 @@ depois da PO), considera-se que **há um turno ativo** se algum PR aberto foi at
 menos de **90 minutos** (push, comentário, revisão ou label atualizam o PR). PRs com a
 label `precisa-stakeholder` não contam, porque estão parados esperando o stakeholder:
 
+Também conta como turno ativo o **intervalo entre uma história e a próxima** (ADR 0011):
+um PR de história (`feat/*`) fechado ou mergeado há menos de 90 minutos, ou um PR que
+recebeu a label `precisa-stakeholder` há menos de 90 minutos. Nesses momentos não há PR
+aberto, mas o turno que acabou de fechar a história já está indo para a próxima.
+
 ```bash
+# 1. PR aberto atualizado há menos de 90 min
 gh api "repos/denylsonfreitas/money-waste/pulls?state=open" \
   --jq '.[] | select(any(.labels[]; .name == "precisa-stakeholder") | not)
              | select((now - (.updated_at | fromdate)) < 5400) | .number'
+# 2. PR de história fechado ou mergeado há menos de 90 min
+gh api "repos/denylsonfreitas/money-waste/pulls?state=closed&sort=updated&direction=desc&per_page=20" \
+  --jq '.[] | select(.head.ref | startswith("feat/"))
+             | select((now - (.closed_at | fromdate)) < 5400) | .number'
+# 3. Label precisa-stakeholder aplicada há menos de 90 min
+gh api "repos/denylsonfreitas/money-waste/issues/events?per_page=50" \
+  --jq '.[] | select(.event == "labeled" and .label.name == "precisa-stakeholder")
+             | select((now - (.created_at | fromdate)) < 5400) | .issue.number'
 ```
 
-Se o comando imprimir algo, encerre o turno sem mudar nada. A trava vale só no início de
+Se algum dos comandos imprimir algo, encerre o turno sem mudar nada. A trava vale só no início de
 uma sessão: o turno que já está trabalhando não se trava com os próprios commits.
 
-## Cota diária
-- **No máximo 2 histórias novas por dia.** A única fonte da contagem são os **PRs de
-  história** (`head` começando com `feat/`) **criados hoje**, mergeados ou não:
+## Ritmo
+- **Sem limite fixo de histórias por dia** (decisão do stakeholder em 10/11/2026, ADR 0011). O time
+  emenda uma história na outra enquanto for horário de turno. O limite real é o **limite de
+  uso do plano do Claude**: quando ele acaba, a sessão para.
+- Continua valendo **uma história por vez**: a próxima só começa depois que a anterior foi
+  mergeada (ou fechada, ou marcada com `precisa-stakeholder`).
+- O PR rascunho continua sendo aberto **logo depois do commit da PO**. É ele que faz a trava
+  funcionar e que deixa o trabalho visível se a sessão parar no meio.
+- Se a sessão parar no meio de uma rodada (limite de uso do plano, erro, timeout), depois
+  que a trava de 90 minutos expira o próximo turno retoma de onde parou.
 
-  ```bash
-  HOJE=$(TZ=America/Bahia date +%F)
-  gh api "repos/denylsonfreitas/money-waste/pulls?state=all&per_page=100" \
-    --jq "[.[] | select(.head.ref | startswith(\"feat/\"))
-               | select((.created_at | fromdate) - 10800 | strftime(\"%Y-%m-%d\") == \"$HOJE\")]
-          | length"
-  ```
+Para saber quantas histórias o time começou num dia (usado só na daily e nas férias):
 
-- Por isso o PR rascunho é aberto **logo depois do commit da PO**: a história passa a contar
-  na cota no instante em que começa.
-- Retomar ou corrigir um PR que já existe não gasta cota.
-- Se o limite de uso do plano do Claude acabar no meio de uma rodada, a sessão para. Depois
-  que a trava de 90 minutos expira, o próximo turno retoma de onde parou.
+```bash
+HOJE=$(TZ=America/Bahia date +%F)
+gh api "repos/denylsonfreitas/money-waste/pulls?state=all&per_page=100" \
+  --jq "[.[] | select(.head.ref | startswith(\"feat/\"))
+             | select((.created_at | fromdate) - 10800 | strftime(\"%Y-%m-%d\") == \"$HOJE\")]
+        | length"
+```
 
 ## Escopo do MVP
 O MVP está pronto quando estas histórias estiverem **Entregues** (mergeadas na `main`):

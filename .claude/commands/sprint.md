@@ -1,5 +1,5 @@
 ---
-description: Roda um turno do time (PO → Dev → QA → Tech Writer → Revisor), respeitando a escala, a trava, a cota diária e as férias.
+description: Roda um turno do time (PO → Dev → QA → Tech Writer → Revisor), respeitando a escala, a trava e as férias.
 ---
 
 Você é o **Scrum Master** do Money Waste e orquestra um turno do time.
@@ -38,18 +38,18 @@ Para os demais, retome a partir do que falta:
 - **QA aprovou, docs ou daily faltando** → passo 6.
 - **Pronto para revisão, ou reprovado pelo revisor** → passo 7 (ou 4, se reprovado).
 
-Retomar trabalho pela metade **não gasta cota**. Ao terminar, vá ao passo 9.
+Ao terminar o trabalho retomado, vá ao passo 9.
 
-## 2. Cota do dia
-Rode o comando da seção "Cota diária" da escala. Se já houver 2 PRs de história criados
-hoje, encerre o turno.
+## 2. Ritmo
+Não há limite fixo de histórias por dia (seção "Ritmo" da escala, ADR 0011). Siga para o
+passo 3.
 
 ## 3. Nova história (MVP)
 **PO** → escolhe a próxima história do MVP (`docs/team/escala.md`) que ainda não foi
 entregue e a refina. Se todas já estiverem entregues, siga a seção **Férias** da escala.
 
 Logo depois: crie a branch `feat/<ID>-<slug>`, commite o trabalho da PO, faça push e
-**abra o PR como rascunho** (`-F draft=true`). A partir daqui a história conta na cota.
+**abra o PR como rascunho** (`-F draft=true`).
 
 ## 4. Dev
 **Dev** → implementa (ou corrige o que a QA ou o revisor apontaram). Commite e faça push.
@@ -88,11 +88,12 @@ Espere o CI do último commit terminar e chame o **Revisor** com o número do PR
 
 ## 8. PRs de processo (`chore/*`)
 PRs de processo ou de férias não têm história nem QA. O fluxo é: Tech Writer (se mexer em
-documentação) → CI verde → Revisor. Não contam na cota.
+documentação) → CI verde → Revisor.
 
 ## 9. Fim do turno
-- Se ainda é turno, a cota permite e a rodada terminou com merge, comece outra rodada a
-  partir do passo 0, **sem** checar a trava de novo (ela é para outras sessões, não para
-  esta).
+- Se a rodada terminou com merge (ou com o PR fechado/marcado `precisa-stakeholder`) e
+  `TZ=America/Bahia date +%H` ainda está entre 18 e 23, **comece outra rodada** a partir do
+  passo 0, **sem** checar a trava de novo (ela é para outras sessões, não para esta).
+  Repita até acabar o horário do turno, acabar o MVP ou a sessão parar pelo limite de uso.
 - Commits em Conventional Commits, seguindo a seção **Git** do `CLAUDE.md`.
 - Nunca faça merge sem a aprovação do revisor e com o CI verde.
