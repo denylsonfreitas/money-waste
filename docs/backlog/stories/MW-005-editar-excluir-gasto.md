@@ -1,6 +1,6 @@
 # MW-005 — Editar e excluir um gasto
 
-**Status:** Em andamento
+**Status:** Concluída (aguardando merge)
 **Sprint:** 1
 **Prioridade:** 5
 

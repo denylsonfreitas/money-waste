@@ -37,6 +37,17 @@ Mantido pelo Tech Writer (Leo).
   Mensagens "Nenhum gasto neste mês." e "Não foi possível carregar os gastos por categoria.".
 - ADR 0010: totais por categoria em endpoint próprio, com desempate pela ordem fixa das
   categorias.
+- Editar um gasto (MW-005): `PUT /api/expenses/{id}` com o mesmo corpo, as mesmas regras e as
+  mesmas mensagens do `POST`. Responde `200` com o gasto (mesmo `id`), `400` com *problem
+  details* ou `404`. A edição mantém a ordem de registro.
+- Excluir um gasto (MW-005): `DELETE /api/expenses/{id}` apaga de vez. Responde `204` ou
+  `404` (inclusive para gasto já excluído). Nos dois endpoints, `id` que não é Guid dá `404`.
+- Botões "Editar" e "Excluir" em cada item de "Gastos do mês". "Editar" reaproveita o
+  formulário do topo ("Editar gasto", "Salvar alterações", "Cancelar") e confirma com
+  "Gasto atualizado: <descrição> — R$ <valor>". "Excluir" pede confirmação nativa
+  (`Excluir o gasto "Almoço — R$ 45,90"?`). Erros: "Não foi possível salvar as alterações." e
+  "Não foi possível excluir o gasto.". Lista, total e categorias atualizam sem recarregar.
+- ADR 0012: validação do gasto compartilhada entre criação e edição, e edição no lugar.
 
 ### Alterado
 - `ExpenseStore` trocou o `ConcurrentDictionary` por `List` com `lock`, para guardar a ordem
@@ -53,6 +64,11 @@ Mantido pelo Tech Writer (Leo).
   pela lista e pelo total. O comportamento do `GET /api/expenses` não mudou.
 - `ExpenseCategories` ganhou a lista ordenada `Ordered`; `All` passou a ser derivado dela.
   As categorias aceitas no `POST /api/expenses` não mudaram.
+- A validação do gasto saiu de `CreateExpense` para `ExpenseRequest.Validate`, usada pelo
+  `POST` e pelo `PUT`. `CreateExpenseRequest` virou `ExpenseRequest`. O contrato do
+  `POST /api/expenses` não mudou.
+- No front, o título "Novo gasto" saiu do `app.html` para dentro do `ExpenseForm`, e o `App`
+  recarrega total, categorias e lista num método só (`refreshMonth()`).
 
 ### Observações
 - Os gastos ficam em memória e somem ao reiniciar a API (persistência é a MW-007).
@@ -60,3 +76,8 @@ Mantido pelo Tech Writer (Leo).
   fusos diferentes, perto da virada do mês, um gasto pode não aparecer na lista (nem no total).
 - O `total` não sai com 2 casas fixas (`0`, `0.30`, `158.40`), igual ao `amount`. Vale também
   para o `total` de cada categoria.
+- Na edição, sem `date` vale a data de hoje. Se a pessoa apagar o campo de data e salvar, o
+  gasto passa a ter a data de hoje (candidato à MW-009).
+- A mensagem "Não foi possível excluir o gasto." só some na próxima tentativa de excluir.
+  Excluir o gasto que está em edição deixa o formulário em "Editar gasto"; salvar dá
+  "Não foi possível salvar as alterações." até clicar "Cancelar".
