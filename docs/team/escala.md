@@ -4,7 +4,7 @@ Regras de trabalho definidas pelo stakeholder (@denylsonfreitas). O Scrum Master
 arquivo no início de **todo** turno, antes de qualquer outra coisa.
 
 ## Status do time
-**Status: Trabalhando**
+**Status: Férias**
 
 Valores possíveis: `Trabalhando` ou `Férias`. Em `Férias`, nenhuma rodada começa.
 
