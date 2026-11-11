@@ -44,7 +44,7 @@ história que mexa no mesmo arquivo, em commit `chore:` separado.
   perder numa queda de energia.
 - **Criar o arquivo de dados com permissão 0600** (revisor no PR #9): no Linux/macOS, só o
   dono lê e escreve os gastos.
-- **Acentos gravados escapados no arquivo** (daily da MW-007): o JSON guarda `ç` em vez
+- **Acentos gravados escapados no arquivo** (daily da MW-007): o JSON guarda `\u00e7` em vez
   de `ç`. Não afeta a API; gravar legível (encoder sem escape de não-ASCII) facilita abrir o
   arquivo à mão.
 - **Teste de falha de gravação** (daily da MW-007): se gravar o arquivo falhar, a API responde

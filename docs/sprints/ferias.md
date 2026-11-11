@@ -32,7 +32,7 @@ Para testar: README, seção **"Como testar o MVP"**. Notas da versão: `CHANGEL
 | Testes no fim do MVP | 78 .NET (xUnit) e 92 web (Jasmine) |
 | Histórias pós-MVP no backlog | MW-008 a MW-012, mais débitos técnicos |
 
-O revisor só entrou no fluxo a partir do PR #3; o PR #1 foi mergeado sem revisão formal.
+O revisor só entrou no fluxo a partir do PR #3: o PR #1 foi mergeado sem revisão formal e o PR #2 recebeu a revisão só depois do merge.
 
 ## O que o time sugere melhorar no processo
 

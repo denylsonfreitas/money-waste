@@ -105,4 +105,3 @@ Nenhuma impede o uso do MVP. As de validação estão na MW-009 do
   possível salvar as alterações." até clicar "Cancelar".
 - A lista só mostra o mês atual: um gasto registrado (ou editado) com data de outro mês some
   da tela, mas continua no arquivo e conta no "Mês anterior" se for do mês passado.
-
