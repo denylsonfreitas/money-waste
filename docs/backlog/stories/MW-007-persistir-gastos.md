@@ -1,6 +1,6 @@
 # MW-007 — Persistir os gastos entre reinícios da API
 
-**Status:** Concluída (aguardando merge)
+**Status:** Entregue (PR #9, commit `2403c48`)
 **Sprint:** 1
 **Prioridade:** 7 (última do MVP)
 
