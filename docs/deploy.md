@@ -87,9 +87,18 @@ Se o Render pedir cartão de crédito em algum passo, pare e avise o time: o pla
 
 ### Vercel (web)
 
-O orquestrador cria e liga o projeto `money-waste` (raiz `web/`) pela API do Vercel. Se precisar refazer
-na mão: <https://vercel.com/new> → importar `money-waste` → **Root Directory** `web` → **Deploy**
-(o resto vem do `web/vercel.json`).
+A conta do Vercel ainda não está ligada ao GitHub, então o time não consegue criar o projeto
+sozinho. Uma vez só:
+
+1. Abra <https://vercel.com/new> e toque em **Continue with GitHub** (ou **Add GitHub Account**).
+2. Quando o GitHub pedir, instale o app do Vercel em **Only select repositories** →
+   `money-waste`.
+3. Em **Import Git Repository**, escolha `money-waste` → **Import**.
+4. Deixe o **Project Name** como `money-waste` e mude o **Root Directory** para `web`
+   (**Edit** → `web` → **Continue**). Não mexa no resto: vem do `web/vercel.json`.
+5. Toque em **Deploy**. Quando terminar, confira se o domínio é `money-waste.vercel.app`.
+
+Depois disso, todo merge na `main` publica o front sozinho.
 
 ### Testar
 
