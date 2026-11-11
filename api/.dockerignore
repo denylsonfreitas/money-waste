@@ -1,0 +1,7 @@
+# Fora da imagem: saídas de build locais e os testes (rodam no CI).
+**/bin/
+**/obj/
+tests/
+**/*.user
+**/expenses.json
+**/expenses.json.tmp

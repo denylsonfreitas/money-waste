@@ -20,6 +20,7 @@ Money Waste é um app de controle de gastos pessoais. Visão completa em `docs/p
 | QA — Bia | `.claude/agents/qa.md` | Verifica critérios de aceite, aprova ou reprova |
 | Tech Writer — Leo | `.claude/agents/tech-writer.md` | README, CHANGELOG, ADRs, docs da API |
 | Revisor — Rafa | `.claude/agents/reviewer.md` | Revisa o PR, aprova e faz o merge, ou reprova |
+| DevOps — Duda | `.claude/agents/devops.md` | Deploy (Vercel + Render) e pipeline; ver `docs/deploy.md` |
 
 Os agentes se comunicam **só por artefatos no repositório**: backlog, arquivos de história,
 relatório do QA, daily, revisão no PR. Nada de contexto "por fora" — se não está escrito,
@@ -59,8 +60,8 @@ acabar o turno ou o limite de uso do plano), até o MVP
   git config user.name "Claude" && git config user.email "noreply@anthropic.com"
   git commit --author="Denylson Freitas <denylsonfeitosa@gmail.com>" -m "..."
   ```
-- Termine a mensagem do commit com `Co-Authored-By: Claude <noreply@anthropic.com>`.
-- **Nunca** inclua links de sessão do Claude (`claude.ai/code/...`) em commits ou PRs.
+- **Sem assinatura do Claude** em commits e PRs: nada de `Co-Authored-By`, "Generated with
+  Claude Code" ou links de sessão (`claude.ai/code/...`). Só o nome do stakeholder.
 - Não reescreva histórico já enviado (sem force push).
 
 ## Ambiente

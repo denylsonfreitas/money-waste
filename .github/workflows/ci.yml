@@ -33,3 +33,10 @@ jobs:
       - run: npm ci
       - run: npx ng test --watch=false --browsers=ChromeHeadless
       - run: npx ng build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Só prova que a imagem da API (deploy no Render) builda.
+      - run: docker build -f api/Dockerfile api

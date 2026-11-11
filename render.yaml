@@ -1,0 +1,21 @@
+# Blueprint do Render: API do Money Waste no plano gratuito (ver docs/deploy.md).
+services:
+  - type: web
+    name: money-waste-api
+    runtime: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: ./api
+    healthCheckPath: /api/health
+    envVars:
+      # Só o domínio de produção do Vercel: CORS não aceita curinga como https://money-waste-*.vercel.app.
+      - key: Cors__AllowedOrigins__0
+        value: https://money-waste.vercel.app
+      # Disco do plano free é efêmero: o arquivo some a cada reinício/deploy/hibernação.
+      - key: Storage__DataFile
+        value: /app/data/expenses.json
+      # "Hoje" da API vem do relógio local do servidor (TimeProvider.GetLocalNow); sem isso seria UTC.
+      - key: TZ
+        value: America/Bahia

@@ -1,10 +1,19 @@
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using MoneyWaste.Api.Features.Expenses;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-    options.AddDefaultPolicy(policy =>
-        policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
+// Origens liberadas no CORS: config "Cors:AllowedOrigins" (env Cors__AllowedOrigins__0, __1...).
+// Sem configuração, vale o front local (ng serve). Lido na resolução das opções, não na subida
+// do builder, para valer qualquer fonte de configuração (inclusive a dos testes).
+builder.Services.AddCors();
+builder.Services.AddOptions<CorsOptions>().Configure<IConfiguration>((options, configuration) =>
+{
+    var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() is { Length: > 0 } configured
+        ? configured
+        : ["http://localhost:4200"];
+    options.AddDefaultPolicy(policy => policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod());
+});
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ExpenseStore>();
