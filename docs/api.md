@@ -179,3 +179,91 @@ Mensagens possíveis:
 > **Atenção:** se o corpo não for um JSON válido ou um campo vier com tipo errado
 > (ex.: `"amount": "abc"`), a API responde **400 sem *problem details*** (corpo vazio em
 > Production). Isso acontece antes da validação acima.
+
+## `PUT /api/expenses/{id}`
+Edita um gasto existente (MW-005). O corpo tem **os mesmos campos, regras e mensagens** do
+`POST /api/expenses` (a validação é a mesma, em `ExpenseRequest.Validate`). Todos os campos são
+substituídos; não há edição parcial.
+
+- O `id` não muda.
+- A **ordem de registro** não muda: no desempate por data do `GET /api/expenses`, o gasto
+  continua na posição em que foi criado.
+- Sem `date` (omitido, vazio ou só espaços), vale a **data de hoje** (do servidor), como na
+  criação. Ou seja: mandar a edição sem `date` muda a data do gasto para hoje.
+- Se a nova data cair em outro mês, o gasto sai do `GET /api/expenses`, do `/total` e do
+  `/totals-by-category` do mês atual. Ele não é apagado.
+- A validação vem antes da busca: corpo inválido dá `400` mesmo que o `id` não exista.
+
+### Exemplo de requisição
+```http
+PUT /api/expenses/7a257d49-3872-47b0-8662-a63d58df8a27
+Content-Type: application/json
+
+{
+  "amount": 50.00,
+  "description": "Almoço de domingo",
+  "category": "leisure",
+  "date": "2026-11-06"
+}
+```
+
+### **200 OK**
+O gasto já atualizado, com o mesmo `id`.
+```json
+{
+  "id": "7a257d49-3872-47b0-8662-a63d58df8a27",
+  "amount": 50.00,
+  "description": "Almoço de domingo",
+  "category": "leisure",
+  "date": "2026-11-06"
+}
+```
+
+### **400 Bad Request**
+Mesmo formato e mesmas mensagens do `400` do `POST /api/expenses`. O gasto continua
+**exatamente** como estava.
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+  "title": "Dados do gasto inválidos.",
+  "status": 400,
+  "errors": {
+    "amount": ["O valor deve ter no máximo 2 casas decimais."],
+    "date": ["A data é inválida. Use o formato aaaa-mm-dd."]
+  }
+}
+```
+
+Mensagens possíveis:
+| Campo | Mensagem |
+|---|---|
+| `amount` | `O valor deve ser maior que zero.` (ausente, zero ou negativo) |
+| `amount` | `O valor deve ter no máximo 2 casas decimais.` |
+| `description` | `A descrição é obrigatória.` |
+| `category` | `A categoria é inválida.` (ausente ou fora da lista) |
+| `date` | `A data é inválida. Use o formato aaaa-mm-dd.` |
+
+JSON malformado ou campo com tipo errado: **400 sem *problem details***, como no `POST`.
+
+### **404 Not Found**
+Corpo vazio. Nenhum gasto é criado nem alterado. Acontece quando:
+- nenhum gasto tem esse `id` (inclusive um já excluído);
+- o `id` não é um Guid (ex.: `/api/expenses/abc`): a rota não casa.
+
+## `DELETE /api/expenses/{id}`
+Exclui um gasto **de vez** (MW-005). Não há lixeira nem desfazer. Sem corpo na requisição.
+
+### Exemplo de requisição
+```http
+DELETE /api/expenses/7a257d49-3872-47b0-8662-a63d58df8a27
+```
+
+### **204 No Content**
+Gasto excluído. Corpo vazio. Ele some do `GET /api/expenses`, do `/total` e do
+`/totals-by-category`.
+
+### **404 Not Found**
+Corpo vazio. Os outros gastos não são afetados. Acontece quando:
+- nenhum gasto tem esse `id`, inclusive quando ele **já foi excluído** (excluir duas vezes dá
+  `204` e depois `404`);
+- o `id` não é um Guid: a rota não casa.

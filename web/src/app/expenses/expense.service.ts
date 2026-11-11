@@ -14,6 +14,16 @@ export class ExpenseService {
     return this.http.post<Expense>(`${this.baseUrl}/api/expenses`, request);
   }
 
+  /** Edita um gasto existente (MW-005): mesmos campos e regras da criação. */
+  update(id: string, request: CreateExpenseRequest): Observable<Expense> {
+    return this.http.put<Expense>(`${this.baseUrl}/api/expenses/${id}`, request);
+  }
+
+  /** Exclui um gasto de vez (MW-005). */
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/expenses/${id}`);
+  }
+
   /** Gastos do mês atual, já na ordem de exibição (mais recente primeiro). */
   listCurrentMonth(): Observable<Expense[]> {
     return this.http.get<Expense[]>(`${this.baseUrl}/api/expenses`);

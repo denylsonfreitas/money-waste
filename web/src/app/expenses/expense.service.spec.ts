@@ -89,4 +89,34 @@ describe('ExpenseService', () => {
 
     expect(result).toEqual(totals);
   });
+
+  // MW-005
+  it('envia PUT para /api/expenses/{id} e devolve o gasto atualizado', () => {
+    const updated: Expense = { id: 'abc', amount: 50, description: 'Almoço', category: 'food', date: '2026-11-05' };
+    let result: Expense | undefined;
+
+    service
+      .update('abc', { amount: 50, description: 'Almoço', category: 'food', date: '2026-11-05' })
+      .subscribe((expense) => (result = expense));
+
+    const req = http.expectOne('http://localhost:5215/api/expenses/abc');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ amount: 50, description: 'Almoço', category: 'food', date: '2026-11-05' });
+    req.flush(updated);
+
+    expect(result).toEqual(updated);
+  });
+
+  // MW-005
+  it('envia DELETE para /api/expenses/{id}', () => {
+    let done = false;
+
+    service.remove('abc').subscribe(() => (done = true));
+
+    const req = http.expectOne('http://localhost:5215/api/expenses/abc');
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(done).toBeTrue();
+  });
 });

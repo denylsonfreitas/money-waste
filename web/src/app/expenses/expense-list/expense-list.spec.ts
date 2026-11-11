@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Expense } from '../expense.model';
@@ -111,5 +111,83 @@ describe('ExpenseList', () => {
 
     expect(byTestId('list-error')).toBeNull();
     expect(items().length).toBe(1);
+  });
+
+  // MW-005
+  describe('editar e excluir', () => {
+    const lunch: Expense = { id: 'lunch', amount: 45.9, description: 'Almoço', category: 'food', date: '2026-11-05' };
+    const click = (testId: string) => {
+      el.querySelector<HTMLButtonElement>(`[data-testid="${testId}"]`)!.click();
+      fixture.detectChanges();
+    };
+
+    beforeEach(() => respond([lunch]));
+
+    it('cada item tem os botões Editar e Excluir', () => {
+      const buttons = Array.from(el.querySelectorAll('[data-testid="expense-item"] button')).map((b) =>
+        b.textContent?.trim(),
+      );
+      expect(buttons).toEqual(['Editar', 'Excluir']);
+    });
+
+    // Critério 9
+    it('Editar avisa (evento edit) qual gasto editar, sem chamar a API', () => {
+      const edited: Expense[] = [];
+      fixture.componentInstance.edit.subscribe((expense) => edited.push(expense));
+
+      click('edit-expense');
+
+      expect(edited).toEqual([lunch]);
+      http.expectNone(() => true);
+    });
+
+    // Critério 13
+    it('Excluir pede confirmação, envia DELETE e avisa (evento deleted)', () => {
+      const confirm = spyOn(window, 'confirm').and.returnValue(true);
+      const deleted: Expense[] = [];
+      fixture.componentInstance.deleted.subscribe((expense) => deleted.push(expense));
+
+      click('delete-expense');
+
+      expect(confirm).toHaveBeenCalledWith('Excluir o gasto "Almoço — R$ 45,90"?');
+      const req = http.expectOne(`${API_URL}/lunch`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null, { status: 204, statusText: 'No Content' });
+
+      expect(deleted).toEqual([lunch]);
+    });
+
+    // Critério 14
+    it('sem confirmação, nada é enviado e o gasto continua na lista', () => {
+      spyOn(window, 'confirm').and.returnValue(false);
+      const deleted: Expense[] = [];
+      fixture.componentInstance.deleted.subscribe((expense) => deleted.push(expense));
+
+      click('delete-expense');
+
+      http.expectNone(() => true);
+      expect(deleted).toEqual([]);
+      expect(items().map((i) => i.description)).toEqual(['Almoço']);
+    });
+
+    // Critério 15
+    for (const [name, fail] of [
+      ['404', (req: TestRequest) => req.flush(null, { status: 404, statusText: 'Not Found' })],
+      ['falha de conexão', (req: TestRequest) => req.error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' })],
+    ] as const) {
+      it(`com ${name} ao excluir, mostra "Não foi possível excluir o gasto." e mantém a lista`, () => {
+        spyOn(window, 'confirm').and.returnValue(true);
+        const deleted: Expense[] = [];
+        fixture.componentInstance.deleted.subscribe((expense) => deleted.push(expense));
+
+        click('delete-expense');
+        fail(http.expectOne(`${API_URL}/lunch`));
+        fixture.detectChanges();
+
+        expect(byTestId('delete-error')?.textContent?.trim()).toBe('Não foi possível excluir o gasto.');
+        expect(deleted).toEqual([]);
+        expect(items().map((i) => i.description)).toEqual(['Almoço']);
+      });
+    }
   });
 });

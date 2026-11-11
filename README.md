@@ -87,6 +87,10 @@ claude            # abra o Claude Code na pasta
 - **Ver o total por categoria** (MW-004) — seção "Gastos por categoria", entre o total e a
   lista: "Alimentação — R$ 58,40", da categoria que mais gastou para a que menos. Só mostra
   categorias com gasto no mês e atualiza depois de cada registro.
+- **Editar e excluir um gasto** (MW-005) — cada item da lista tem "Editar" e "Excluir".
+  "Editar" preenche o formulário do topo ("Editar gasto", com "Salvar alterações" e
+  "Cancelar"), com as mesmas regras do registro. "Excluir" pede confirmação e apaga de vez.
+  Lista, total e categorias atualizam sem recarregar a página.
 
 Próximas histórias: acompanhe o [backlog](docs/backlog/BACKLOG.md).
 
@@ -99,5 +103,7 @@ Próximas histórias: acompanhe o [backlog](docs/backlog/BACKLOG.md).
 | `GET` | `/api/expenses/total` | Devolve o total gasto no mês atual |
 | `GET` | `/api/expenses/totals-by-category` | Devolve o total de cada categoria no mês atual |
 | `POST` | `/api/expenses` | Registra um gasto |
+| `PUT` | `/api/expenses/{id}` | Edita um gasto |
+| `DELETE` | `/api/expenses/{id}` | Exclui um gasto |
 
 Corpo, respostas e exemplos em [`docs/api.md`](docs/api.md).
