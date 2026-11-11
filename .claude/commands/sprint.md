@@ -40,8 +40,9 @@ Para os demais, retome a partir do que falta:
 
 Ao terminar o trabalho retomado, vá ao passo 9.
 
-## 2. Cota do dia
-Não há limite fixo de histórias por dia (seção "Cota diária" da escala). Siga para o passo 3.
+## 2. Ritmo
+Não há limite fixo de histórias por dia (seção "Ritmo" da escala, ADR 0011). Siga para o
+passo 3.
 
 ## 3. Nova história (MVP)
 **PO** → escolhe a próxima história do MVP (`docs/team/escala.md`) que ainda não foi

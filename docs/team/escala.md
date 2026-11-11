@@ -26,17 +26,31 @@ depois da PO), considera-se que **há um turno ativo** se algum PR aberto foi at
 menos de **90 minutos** (push, comentário, revisão ou label atualizam o PR). PRs com a
 label `precisa-stakeholder` não contam, porque estão parados esperando o stakeholder:
 
+Também conta como turno ativo o **intervalo entre uma história e a próxima** (ADR 0011):
+um PR de história (`feat/*`) fechado ou mergeado há menos de 90 minutos, ou um PR que
+recebeu a label `precisa-stakeholder` há menos de 90 minutos. Nesses momentos não há PR
+aberto, mas o turno que acabou de fechar a história já está indo para a próxima.
+
 ```bash
+# 1. PR aberto atualizado há menos de 90 min
 gh api "repos/denylsonfreitas/money-waste/pulls?state=open" \
   --jq '.[] | select(any(.labels[]; .name == "precisa-stakeholder") | not)
              | select((now - (.updated_at | fromdate)) < 5400) | .number'
+# 2. PR de história fechado ou mergeado há menos de 90 min
+gh api "repos/denylsonfreitas/money-waste/pulls?state=closed&sort=updated&direction=desc&per_page=20" \
+  --jq '.[] | select(.head.ref | startswith("feat/"))
+             | select((now - (.closed_at | fromdate)) < 5400) | .number'
+# 3. Label precisa-stakeholder aplicada há menos de 90 min
+gh api "repos/denylsonfreitas/money-waste/issues/events?per_page=50" \
+  --jq '.[] | select(.event == "labeled" and .label.name == "precisa-stakeholder")
+             | select((now - (.created_at | fromdate)) < 5400) | .issue.number'
 ```
 
-Se o comando imprimir algo, encerre o turno sem mudar nada. A trava vale só no início de
+Se algum dos comandos imprimir algo, encerre o turno sem mudar nada. A trava vale só no início de
 uma sessão: o turno que já está trabalhando não se trava com os próprios commits.
 
-## Cota diária
-- **Sem limite fixo de histórias por dia** (decisão do stakeholder em 10/11/2026). O time
+## Ritmo
+- **Sem limite fixo de histórias por dia** (decisão do stakeholder em 10/11/2026, ADR 0011). O time
   emenda uma história na outra enquanto for horário de turno. O limite real é o **limite de
   uso do plano do Claude**: quando ele acaba, a sessão para.
 - Continua valendo **uma história por vez**: a próxima só começa depois que a anterior foi
