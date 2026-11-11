@@ -2,7 +2,7 @@
 
 **Controle de gastos desenvolvido por um time Scrum autônomo de agentes de IA.**
 
-Este repositório é um experimento: um time de cinco agentes no [Claude Code](https://claude.com/claude-code)
+Este repositório é um experimento: um time de seis agentes no [Claude Code](https://claude.com/claude-code)
 planeja, implementa, testa, documenta, revisa e faz o merge do produto sozinho, num turno
 noturno, até o MVP ficar pronto. O humano entra como **stakeholder**: define a visão e a
 escala do time, e testa o MVP quando o time sai de férias.
@@ -16,6 +16,7 @@ escala do time, e testa o MVP quando o time sai de férias.
 | 🔍 | **Bia** — QA | Confere cada critério com evidências e reprova sem dó |
 | ✍️ | **Leo** — Tech Writer | Mantém README, CHANGELOG, ADRs e docs da API |
 | 🧑‍💻 | **Rafa** — Revisor | Revisa o PR inteiro e decide: merge ou volta para o Dev |
+| ⚙️ | **Duda** — DevOps | Cuida do deploy (Vercel + Render) e do pipeline |
 
 As personas e regras de cada um estão em [`.claude/agents/`](.claude/agents).
 
@@ -66,6 +67,17 @@ cd web && npm install && npx ng serve
 # Verificação completa (o mesmo que o time roda antes de abrir PR)
 scripts/check.sh
 ```
+
+## 🌐 No ar
+
+| | Endereço |
+|---|---|
+| **App** | https://money-waste.vercel.app |
+| **API** | https://money-waste-api.onrender.com/api/health |
+
+Plano gratuito: a API dorme depois de 15 min sem uso (a primeira abertura leva ~1 min) e os
+gastos se perdem quando ela reinicia. Detalhes e como refazer o deploy em
+[`docs/deploy.md`](docs/deploy.md).
 
 ## 🧪 Como testar o MVP
 

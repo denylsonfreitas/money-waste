@@ -1,7 +1,9 @@
 import { InjectionToken } from '@angular/core';
 
-/** Endereço base da API. Único lugar onde a URL é definida. */
+import { environment } from '../environments/environment';
+
+/** Endereço base da API. Vem do arquivo de ambiente (ver docs/deploy.md). */
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL', {
   providedIn: 'root',
-  factory: () => 'http://localhost:5215',
+  factory: () => environment.apiBaseUrl,
 });

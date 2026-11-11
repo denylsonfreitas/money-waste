@@ -1,6 +1,6 @@
 # ADR 0005 — URL base da API no token `API_BASE_URL`
 
-**Status:** Aceita · **Data:** 2026-11-09 · **História:** MW-001
+**Status:** Aceita, complementada pela [ADR 0015](0015-deploy-vercel-e-render.md) (URL por ambiente) · **Data:** 2026-11-09 · **História:** MW-001
 
 ## Contexto
 O front passa a chamar a API. A URL não pode ficar espalhada pelos serviços.
