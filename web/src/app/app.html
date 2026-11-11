@@ -4,22 +4,21 @@
     <p class="tagline">Registre o gasto agora. Descubra para onde o dinheiro vai depois.</p>
   </header>
 
-  <section class="card" aria-labelledby="new-expense-title">
-    <h2 id="new-expense-title">Novo gasto</h2>
-    <app-expense-form (created)="total.reload(); categories.reload(); list.reload()" />
+  <section class="card" aria-labelledby="expense-form-title">
+    <app-expense-form #form (created)="refreshMonth()" (updated)="refreshMonth()" />
   </section>
 
   <section class="card" aria-label="Total do mês">
-    <app-expense-total #total />
+    <app-expense-total />
   </section>
 
   <section class="card" aria-labelledby="category-totals-title">
     <h2 id="category-totals-title">Gastos por categoria</h2>
-    <app-category-totals #categories />
+    <app-category-totals />
   </section>
 
   <section class="card" aria-labelledby="month-expenses-title">
     <h2 id="month-expenses-title">Gastos do mês</h2>
-    <app-expense-list #list />
+    <app-expense-list (edit)="form.startEdit($event)" (deleted)="refreshMonth()" />
   </section>
 </main>

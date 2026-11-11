@@ -22,6 +22,29 @@ public sealed class ExpenseStore
     }
 
     /// <summary>
+    /// Troca os dados do gasto mantendo o identificador e a posição de registro (MW-005).
+    /// Devolve <c>null</c> se o gasto não existe.
+    /// </summary>
+    public Expense? Update(Guid id, decimal amount, string description, string category, DateOnly date)
+    {
+        lock (_lock)
+        {
+            var index = _expenses.FindIndex(e => e.Id == id);
+            if (index < 0) return null;
+
+            var updated = new Expense(id, amount, description, category, date);
+            _expenses[index] = updated;
+            return updated;
+        }
+    }
+
+    /// <summary>Apaga o gasto de vez. Devolve <c>false</c> se ele não existe.</summary>
+    public bool Remove(Guid id)
+    {
+        lock (_lock) return _expenses.RemoveAll(e => e.Id == id) > 0;
+    }
+
+    /// <summary>
     /// Gastos com data entre <paramref name="from"/> e <paramref name="to"/> (inclusive),
     /// da data mais recente para a mais antiga; na mesma data, do registrado por último para o primeiro.
     /// </summary>

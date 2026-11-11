@@ -15,6 +15,8 @@ app.UseCors();
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
 app.MapCreateExpense();
+app.MapUpdateExpense();
+app.MapDeleteExpense();
 app.MapListCurrentMonthExpenses();
 app.MapGetCurrentMonthTotal();
 app.MapGetCurrentMonthTotalsByCategory();

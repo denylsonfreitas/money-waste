@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { todayIso } from '../format';
@@ -234,6 +234,118 @@ describe('ExpenseForm', () => {
       expect(input('description').value).toBe('Almoço');
       expect(select().value).toBe('food');
       expect(input('date').value).toBe('2026-11-05');
+    }
+  });
+
+  // MW-005
+  describe('em modo "Editar gasto"', () => {
+    const lunch = { id: 'lunch', amount: 45.9, description: 'Almoço', category: 'food', date: '2026-11-05' } as const;
+    const title = () => el.querySelector('h2')?.textContent?.trim();
+    const submitLabel = () => el.querySelector('button[type="submit"]')?.textContent?.trim();
+    const cancel = () => byTestId('cancel-edit') as HTMLButtonElement | null;
+
+    beforeEach(() => {
+      fixture.componentInstance.startEdit(lunch);
+      fixture.detectChanges();
+    });
+
+    function expectNewExpenseMode(): void {
+      expect(title()).toBe('Novo gasto');
+      expect(submitLabel()).toBe('Registrar');
+      expect(cancel()).toBeNull();
+      expect(input('amount').value).toBe('');
+      expect(input('description').value).toBe('');
+      expect(select().value).toBe('');
+      expect(input('date').value).toBe(todayIso());
+    }
+
+    it('fora da edição, o título é "Novo gasto" e não há Cancelar', () => {
+      fixture.componentInstance['cancel']();
+      fixture.detectChanges();
+      expectNewExpenseMode();
+    });
+
+    // Critério 9
+    it('mostra "Editar gasto", os campos preenchidos, "Salvar alterações" e "Cancelar"', () => {
+      expect(title()).toBe('Editar gasto');
+      expect(Number(input('amount').value)).toBe(45.9);
+      expect(input('description').value).toBe('Almoço');
+      expect(select().value).toBe('food');
+      expect(input('date').value).toBe('2026-11-05');
+      expect(submitLabel()).toBe('Salvar alterações');
+      expect(cancel()?.textContent?.trim()).toBe('Cancelar');
+    });
+
+    // Critério 10
+    it('ao salvar, envia PUT, confirma, avisa (evento updated) e volta a "Novo gasto"', () => {
+      const updated: unknown[] = [];
+      const created: unknown[] = [];
+      fixture.componentInstance.updated.subscribe((expense) => updated.push(expense));
+      fixture.componentInstance.created.subscribe((expense) => created.push(expense));
+      type('amount', '50.00');
+      submit();
+
+      const req = http.expectOne(`${API_URL}/lunch`);
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual({ amount: 50, description: 'Almoço', category: 'food', date: '2026-11-05' });
+      const saved = { ...lunch, amount: 50 };
+      req.flush(saved);
+      fixture.detectChanges();
+
+      expect(byTestId('confirmation')?.textContent?.trim()).toBe('Gasto atualizado: Almoço — R$ 50,00');
+      expect(updated).toEqual([saved]);
+      expect(created).toEqual([]);
+      expectNewExpenseMode();
+    });
+
+    it('valida os campos como na criação e não envia nada se inválido', () => {
+      type('amount', '0');
+      submit();
+
+      http.expectNone(`${API_URL}/lunch`);
+      expect(byTestId('amount-error')?.textContent).toContain('O valor deve ser maior que zero.');
+      expect(title()).toBe('Editar gasto');
+    });
+
+    // Critério 11
+    it('ao cancelar, nada é enviado e o formulário volta a "Novo gasto"', () => {
+      const updated: unknown[] = [];
+      fixture.componentInstance.updated.subscribe((expense) => updated.push(expense));
+      type('amount', '99.00');
+      type('description', 'Outra coisa');
+      fixture.detectChanges();
+
+      cancel()!.click();
+      fixture.detectChanges();
+
+      http.expectNone(() => true);
+      expect(updated).toEqual([]);
+      expectNewExpenseMode();
+    });
+
+    // Critério 12
+    for (const [name, fail] of [
+      ['400', (req: TestRequest) => req.flush({ errors: { amount: ['x'] } }, { status: 400, statusText: 'Bad Request' })],
+      ['404', (req: TestRequest) => req.flush(null, { status: 404, statusText: 'Not Found' })],
+      ['falha de conexão', (req: TestRequest) => req.error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' })],
+    ] as const) {
+      it(`com ${name} ao salvar, mostra "Não foi possível salvar as alterações." e continua editando`, () => {
+        const updated: unknown[] = [];
+        fixture.componentInstance.updated.subscribe((expense) => updated.push(expense));
+        type('amount', '50.00');
+        type('description', 'Almoço de domingo');
+        submit();
+
+        fail(http.expectOne(`${API_URL}/lunch`));
+        fixture.detectChanges();
+
+        expect(byTestId('submit-error')?.textContent?.trim()).toBe('Não foi possível salvar as alterações.');
+        expect(updated).toEqual([]);
+        expect(title()).toBe('Editar gasto');
+        expect(submitLabel()).toBe('Salvar alterações');
+        expect(input('amount').value).toBe('50.00');
+        expect(input('description').value).toBe('Almoço de domingo');
+      });
     }
   });
 });

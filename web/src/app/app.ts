@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 
 import { CategoryTotals } from './expenses/category-totals/category-totals';
 import { ExpenseForm } from './expenses/expense-form/expense-form';
@@ -11,4 +11,15 @@ import { ExpenseTotal } from './expenses/expense-total/expense-total';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {}
+export class App {
+  private readonly total = viewChild.required(ExpenseTotal);
+  private readonly categories = viewChild.required(CategoryTotals);
+  private readonly list = viewChild.required(ExpenseList);
+
+  /** Depois de registrar, editar ou excluir, o total, as categorias e a lista buscam de novo. */
+  protected refreshMonth(): void {
+    this.total().reload();
+    this.categories().reload();
+    this.list().reload();
+  }
+}

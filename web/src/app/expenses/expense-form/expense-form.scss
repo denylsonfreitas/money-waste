@@ -82,3 +82,21 @@ button {
     color: var(--mw-danger);
   }
 }
+
+// O título fica aqui porque muda com o modo (Novo gasto / Editar gasto).
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--mw-text);
+  border: 1px solid var(--mw-border);
+}

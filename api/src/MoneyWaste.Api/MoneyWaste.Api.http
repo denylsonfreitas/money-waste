@@ -26,3 +26,20 @@ GET {{MoneyWaste.Api_HostAddress}}/api/expenses/totals-by-category
 Accept: application/json
 
 ###
+
+# Troque <id> pelo identificador devolvido na criação.
+PUT {{MoneyWaste.Api_HostAddress}}/api/expenses/<id>
+Content-Type: application/json
+
+{
+  "amount": 50.00,
+  "description": "Almoço de domingo",
+  "category": "leisure",
+  "date": "2026-11-06"
+}
+
+###
+
+DELETE {{MoneyWaste.Api_HostAddress}}/api/expenses/<id>
+
+###

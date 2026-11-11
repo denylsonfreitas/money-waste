@@ -314,4 +314,90 @@ describe('App', () => {
     expect(byTestId('category-totals-error')).toBeNull();
     expect(shownCategoryLines()).toEqual(['Alimentação — R$ 58,40']);
   });
+
+  // MW-005
+  describe('editar e excluir', () => {
+    const lunch: Expense = { id: 'lunch', amount: 45.9, description: 'Almoço', category: 'food', date: '2026-11-05' };
+    const bus: Expense = { id: 'bus', amount: 12.5, description: 'Ônibus', category: 'transport', date: '2026-11-03' };
+    const shownAmounts = () =>
+      Array.from(el.querySelectorAll('[data-testid="expense-amount"]')).map((a) => a.textContent?.trim());
+    const clickOnFirstItem = (testId: string) => {
+      el.querySelector<HTMLButtonElement>(`[data-testid="expense-item"] [data-testid="${testId}"]`)!.click();
+      fixture.detectChanges();
+    };
+
+    beforeEach(() => {
+      respondTotal(58.4);
+      respondCategories([
+        { category: 'food', total: 45.9 },
+        { category: 'transport', total: 12.5 },
+      ]);
+      respondList([lunch, bus]);
+    });
+
+    // Critérios 9 e 10
+    it('Editar preenche o formulário; ao salvar, lista, total e categorias se atualizam', () => {
+      clickOnFirstItem('edit-expense');
+      expect(el.querySelector('#expense-form-title')?.textContent?.trim()).toBe('Editar gasto');
+      expect(el.querySelector<HTMLInputElement>('#description')!.value).toBe('Almoço');
+
+      const amount = el.querySelector<HTMLInputElement>('#amount')!;
+      amount.value = '50.00';
+      amount.dispatchEvent(new Event('input'));
+      el.querySelector<HTMLButtonElement>('app-expense-form button[type="submit"]')!.click();
+      fixture.detectChanges();
+      http.expectOne({ method: 'PUT', url: `${API_URL}/lunch` }).flush({ ...lunch, amount: 50 });
+      fixture.detectChanges();
+
+      respondTotal(62.5);
+      respondCategories([
+        { category: 'food', total: 50 },
+        { category: 'transport', total: 12.5 },
+      ]);
+      respondList([{ ...lunch, amount: 50 }, bus]);
+
+      expect(byTestId('confirmation')?.textContent?.trim()).toBe('Gasto atualizado: Almoço — R$ 50,00');
+      expect(el.querySelector('#expense-form-title')?.textContent?.trim()).toBe('Novo gasto');
+      expect(shownAmounts()).toEqual(['R$ 50,00', 'R$ 12,50']);
+      expect(shownTotal()).toBe('Total do mês: R$ 62,50');
+      expect(shownCategoryLines()).toEqual(['Alimentação — R$ 50,00', 'Transporte — R$ 12,50']);
+    });
+
+    // Critério 13
+    it('Excluir com confirmação tira o gasto da lista e atualiza total e categorias', () => {
+      spyOn(window, 'confirm').and.returnValue(true);
+
+      clickOnFirstItem('delete-expense');
+      http.expectOne({ method: 'DELETE', url: `${API_URL}/lunch` }).flush(null, { status: 204, statusText: 'No Content' });
+      fixture.detectChanges();
+
+      respondTotal(12.5);
+      respondCategories([{ category: 'transport', total: 12.5 }]);
+      respondList([bus]);
+
+      expect(listedDescriptions()).toEqual(['Ônibus']);
+      expect(shownTotal()).toBe('Total do mês: R$ 12,50');
+      expect(shownCategoryLines()).toEqual(['Transporte — R$ 12,50']);
+    });
+
+    // Critério 15
+    it('se a exclusão falha, mostra o erro e o formulário continua registrando', () => {
+      spyOn(window, 'confirm').and.returnValue(true);
+
+      clickOnFirstItem('delete-expense');
+      http
+        .expectOne({ method: 'DELETE', url: `${API_URL}/lunch` })
+        .error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' });
+      fixture.detectChanges();
+
+      expect(byTestId('delete-error')?.textContent?.trim()).toBe('Não foi possível excluir o gasto.');
+      expect(listedDescriptions()).toEqual(['Almoço', 'Ônibus']);
+
+      registerExpense('Café', '2026-11-06', '5.00');
+      expect(byTestId('confirmation')?.textContent?.trim()).toBe('Gasto registrado: Café — R$ 5,00');
+      respondTotal(63.4);
+      respondCategories([]);
+      respondList([lunch, bus]);
+    });
+  });
 });

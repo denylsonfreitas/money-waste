@@ -121,3 +121,6 @@ que conviver com um valor digitado errado.
 - Sugestão da QA e do revisor (MW-003, MW-004): o padrão carregando/erro/`reload()` se repete
   em três componentes. **Não** resolver nesta história, para manter o PR pequeno. Ficou como
   débito técnico no backlog.
+
+## Decisões do Dev
+- Editar é `PUT /api/expenses/{id:guid}` (200 com o gasto; 400 com as mesmas mensagens da criação; 404) e excluir é `DELETE /api/expenses/{id:guid}` (204; 404). Identificador que não é Guid não casa com a rota e também dá 404. A validação saiu de `CreateExpense` para `ExpenseRequest.Validate`, usada pela criação e pela edição (o `CreateExpenseRequest` virou `ExpenseRequest`); sem data na edição vale hoje, como na criação. O `ExpenseStore.Update` troca o gasto na mesma posição da lista, o que preserva a ordem de registro. No front, o título "Novo gasto"/"Editar gasto" passou para dentro do `ExpenseForm` e o `App` centraliza o recarregamento em `refreshMonth()`; a confirmação de exclusão usa `window.confirm`. Sem dependência nova.

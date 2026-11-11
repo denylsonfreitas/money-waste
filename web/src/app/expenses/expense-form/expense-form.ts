@@ -8,6 +8,7 @@ import { formatBrl, todayIso } from '../format';
 
 const CONNECTION_ERROR = 'Não foi possível falar com o servidor. Verifique a conexão e tente de novo.';
 const GENERIC_ERROR = 'Não foi possível registrar o gasto. Tente de novo.';
+const UPDATE_ERROR = 'Não foi possível salvar as alterações.';
 
 function positiveAmount(control: AbstractControl<number | null>): ValidationErrors | null {
   const value = control.value;
@@ -33,6 +34,11 @@ export class ExpenseForm {
 
   /** Emitido quando a API confirma o registro de um gasto. */
   readonly created = output<Expense>();
+  /** Emitido quando a API confirma a edição de um gasto (MW-005). */
+  readonly updated = output<Expense>();
+
+  /** Gasto em edição; `null` no modo "Novo gasto". */
+  protected readonly editing = signal<Expense | null>(null);
 
   protected readonly categories = EXPENSE_CATEGORIES;
   protected readonly submitting = signal(false);
@@ -59,6 +65,23 @@ export class ExpenseForm {
     return 'Informe o valor do gasto.';
   }
 
+  /** Passa o formulário para o modo "Editar gasto", preenchido com os dados do gasto. */
+  startEdit(expense: Expense): void {
+    this.editing.set(expense);
+    this.confirmation.set(null);
+    this.errorMessage.set(null);
+    this.submitted.set(false);
+    const { amount, description, category, date } = expense;
+    this.form.reset({ amount, description, category, date });
+  }
+
+  /** Volta ao modo "Novo gasto" sem enviar nada à API. */
+  protected cancel(): void {
+    this.editing.set(null);
+    this.errorMessage.set(null);
+    this.resetForm();
+  }
+
   protected submit(): void {
     this.submitted.set(true);
     this.confirmation.set(null);
@@ -74,6 +97,12 @@ export class ExpenseForm {
     };
 
     this.submitting.set(true);
+    const editing = this.editing();
+    if (editing) {
+      this.saveEdit(editing.id, request);
+      return;
+    }
+
     this.expenses.create(request).subscribe({
       next: (expense) => {
         this.submitting.set(false);
@@ -84,6 +113,22 @@ export class ExpenseForm {
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         this.errorMessage.set(this.describeError(error));
+      },
+    });
+  }
+
+  private saveEdit(id: string, request: CreateExpenseRequest): void {
+    this.expenses.update(id, request).subscribe({
+      next: (expense) => {
+        this.submitting.set(false);
+        this.confirmation.set(`Gasto atualizado: ${expense.description} — ${formatBrl(expense.amount)}`);
+        this.editing.set(null);
+        this.resetForm();
+        this.updated.emit(expense);
+      },
+      error: () => {
+        this.submitting.set(false);
+        this.errorMessage.set(UPDATE_ERROR);
       },
     });
   }
