@@ -48,6 +48,15 @@ Mantido pelo Tech Writer (Leo).
   (`Excluir o gasto "Almoço — R$ 45,90"?`). Erros: "Não foi possível salvar as alterações." e
   "Não foi possível excluir o gasto.". Lista, total e categorias atualizam sem recarregar.
 - ADR 0012: validação do gasto compartilhada entre criação e edição, e edição no lugar.
+- Comparar com o mês anterior (MW-006): `GET /api/expenses/month-comparison` devolve
+  `{"currentMonthTotal", "previousMonthTotal", "difference"}`, com diferença = atual − anterior.
+  O mês anterior é o mês de calendário inteiro antes do atual (em janeiro, dezembro do ano
+  anterior). O total atual é o mesmo do `GET /api/expenses/total`. Sem gastos, `200` com tudo `0`.
+- Na seção do total, logo abaixo de "Total do mês", as linhas "Mês anterior: R$ 100,00" e
+  "R$ 50,00 a mais que no mês anterior." ("a menos", com valor sem sinal, ou "Igual ao mês
+  anterior."). Atualizam depois de registrar, editar ou excluir. Se a API falhar, mostra
+  "Não foi possível carregar a comparação com o mês anterior." no lugar das duas linhas.
+- ADR 0013: comparação com o mês anterior em endpoint próprio.
 
 ### Alterado
 - `ExpenseStore` trocou o `ConcurrentDictionary` por `List` com `lock`, para guardar a ordem
@@ -69,6 +78,10 @@ Mantido pelo Tech Writer (Leo).
   `POST /api/expenses` não mudou.
 - No front, o título "Novo gasto" saiu do `app.html` para dentro do `ExpenseForm`, e o `App`
   recarrega total, categorias e lista num método só (`refreshMonth()`).
+- `CurrentMonth` ganhou `PreviousMonthExpenses`, com a mesma regra de mês (dia 1 ao último
+  dia) do `Expenses`. O comportamento da lista, do total e das categorias não mudou.
+- O `refreshMonth()` do `App` também recarrega a comparação: agora são quatro `GET` depois de
+  cada registro, edição ou exclusão.
 
 ### Observações
 - Os gastos ficam em memória e somem ao reiniciar a API (persistência é a MW-007).
@@ -81,3 +94,7 @@ Mantido pelo Tech Writer (Leo).
 - A mensagem "Não foi possível excluir o gasto." só some na próxima tentativa de excluir.
   Excluir o gasto que está em edição deixa o formulário em "Editar gasto"; salvar dá
   "Não foi possível salvar as alterações." até clicar "Cancelar".
+- Na tela, "Total do mês" vem do `GET /total` e a frase de comparação vem da `difference` do
+  `GET /month-comparison` (o `currentMonthTotal` dela não é usado pelo front). Hoje os dois
+  sempre batem; se um pedido falhar ou atrasar, podem não fechar entre si.
+- A comparação herda a pendência de fuso horário servidor x navegador.

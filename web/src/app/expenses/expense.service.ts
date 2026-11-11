@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 import { API_BASE_URL } from '../api.config';
-import { CategoryTotal, CreateExpenseRequest, CurrentMonthTotal, Expense } from './expense.model';
+import { CategoryTotal, CreateExpenseRequest, CurrentMonthTotal, Expense, MonthComparisonResponse } from './expense.model';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseService {
@@ -39,5 +39,10 @@ export class ExpenseService {
   /** Totais por categoria do mês atual, calculados pela API, já na ordem de exibição. */
   currentMonthTotalsByCategory(): Observable<CategoryTotal[]> {
     return this.http.get<CategoryTotal[]>(`${this.baseUrl}/api/expenses/totals-by-category`);
+  }
+
+  /** Total do mês atual x total do mês anterior, calculados pela API (MW-006). */
+  monthComparison(): Observable<MonthComparisonResponse> {
+    return this.http.get<MonthComparisonResponse>(`${this.baseUrl}/api/expenses/month-comparison`);
   }
 }

@@ -1,0 +1,8 @@
+@if (failed()) {
+  <p class="message failure" role="alert" data-testid="comparison-error">Não foi possível carregar a comparação com o mês anterior.</p>
+} @else if (comparison(); as c) {
+  <p class="previous" data-testid="previous-month-total">Mês anterior: {{ formatBrl(c.previousMonthTotal) }}</p>
+  <p class="difference" data-testid="month-difference">{{ sentence() }}</p>
+} @else {
+  <p class="message" data-testid="comparison-loading">Carregando…</p>
+}

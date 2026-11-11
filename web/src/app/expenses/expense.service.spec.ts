@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { CategoryTotal, Expense } from './expense.model';
+import { CategoryTotal, Expense, MonthComparisonResponse } from './expense.model';
 import { ExpenseService } from './expense.service';
 
 describe('ExpenseService', () => {
@@ -88,6 +88,20 @@ describe('ExpenseService', () => {
     req.flush(totals);
 
     expect(result).toEqual(totals);
+  });
+
+  // MW-006
+  it('busca a comparação com o mês anterior com GET em /api/expenses/month-comparison', () => {
+    const comparison: MonthComparisonResponse = { currentMonthTotal: 150, previousMonthTotal: 100, difference: 50 };
+    let result: MonthComparisonResponse | undefined;
+
+    service.monthComparison().subscribe((response) => (result = response));
+
+    const req = http.expectOne('http://localhost:5215/api/expenses/month-comparison');
+    expect(req.request.method).toBe('GET');
+    req.flush(comparison);
+
+    expect(result).toEqual(comparison);
   });
 
   // MW-005

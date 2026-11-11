@@ -104,6 +104,46 @@ Sem gastos no mês atual, a resposta é uma lista vazia (nunca `404` nem erro).
 []
 ```
 
+## `GET /api/expenses/month-comparison`
+Compara o **total do mês atual** com o **total do mês anterior** (MW-006). Não há parâmetros.
+
+- **Mês anterior:** o mês de calendário antes do mês de hoje (do servidor), do dia 1 ao último
+  dia, pela data do gasto. Em janeiro, é dezembro do ano anterior.
+- `currentMonthTotal` usa os **mesmos gastos** do `GET /api/expenses/total`
+  (`CurrentMonth.Expenses`), então os dois valores são sempre iguais.
+- `previousMonthTotal` soma todos os gastos do mês anterior (`CurrentMonth.PreviousMonthExpenses`).
+- `difference` = `currentMonthTotal` − `previousMonthTotal`. Negativo quando o mês atual gastou
+  menos.
+- Soma em `decimal`, exata em centavos (`0.10 + 0.20` dá `0.30`).
+
+| Campo | Tipo | O que é |
+|---|---|---|
+| `currentMonthTotal` | número | Total do mês atual |
+| `previousMonthTotal` | número | Total do mês anterior |
+| `difference` | número | Atual − anterior (pode ser negativo) |
+
+> **Atenção:** os números não saem com 2 casas fixas. Mês sem gasto vem `0`; com gastos, as
+> casas acompanham os valores somados (ex.: `150.00`, `-40.00`). Valor sempre com 2 casas é a
+> MW-009.
+
+### **200 OK** (gastos nos dois meses)
+Hoje é 15/11/2026. Gastos de R$ 100,00 e R$ 50,00 em novembro e de R$ 80,00 e R$ 20,00 em
+outubro:
+```json
+{"currentMonthTotal":150.00,"previousMonthTotal":100.00,"difference":50.00}
+```
+
+Hoje é 10/01/2027. Um gasto de R$ 40,00 em 20/12/2026 e nenhum em janeiro:
+```json
+{"currentMonthTotal":0,"previousMonthTotal":40.00,"difference":-40.00}
+```
+
+### **200 OK** (nenhum gasto)
+Sem gastos no mês atual nem no anterior, tudo vale `0` (nunca `404` nem erro).
+```json
+{"currentMonthTotal":0,"previousMonthTotal":0,"difference":0}
+```
+
 ## `POST /api/expenses`
 Registra um gasto. Nesta versão os gastos ficam **em memória** (somem ao reiniciar a API).
 
@@ -191,7 +231,8 @@ substituídos; não há edição parcial.
 - Sem `date` (omitido, vazio ou só espaços), vale a **data de hoje** (do servidor), como na
   criação. Ou seja: mandar a edição sem `date` muda a data do gasto para hoje.
 - Se a nova data cair em outro mês, o gasto sai do `GET /api/expenses`, do `/total` e do
-  `/totals-by-category` do mês atual. Ele não é apagado.
+  `/totals-by-category` do mês atual. Ele não é apagado. Se cair no mês anterior, passa a
+  contar no `previousMonthTotal` do `/month-comparison`.
 - A validação vem antes da busca: corpo inválido dá `400` mesmo que o `id` não exista.
 
 ### Exemplo de requisição
@@ -259,8 +300,8 @@ DELETE /api/expenses/7a257d49-3872-47b0-8662-a63d58df8a27
 ```
 
 ### **204 No Content**
-Gasto excluído. Corpo vazio. Ele some do `GET /api/expenses`, do `/total` e do
-`/totals-by-category`.
+Gasto excluído. Corpo vazio. Ele some do `GET /api/expenses`, do `/total`, do
+`/totals-by-category` e do `/month-comparison`.
 
 ### **404 Not Found**
 Corpo vazio. Os outros gastos não são afetados. Acontece quando:

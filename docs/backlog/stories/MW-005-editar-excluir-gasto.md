@@ -1,6 +1,6 @@
 # MW-005 — Editar e excluir um gasto
 
-**Status:** Concluída (aguardando merge)
+**Status:** Entregue (PR #7, commit `00d4cd2`)
 **Sprint:** 1
 **Prioridade:** 5
 

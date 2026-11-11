@@ -51,3 +51,10 @@ export interface CategoryTotal {
   category: ExpenseCategory;
   total: number;
 }
+
+/** Resposta de GET /api/expenses/month-comparison (MW-006). Diferença = atual − anterior. */
+export interface MonthComparisonResponse {
+  currentMonthTotal: number;
+  previousMonthTotal: number;
+  difference: number;
+}
