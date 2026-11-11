@@ -13,18 +13,23 @@ public sealed class ListCurrentMonthExpensesEndpointTests : IClassFixture<WebApp
     private static readonly DateTimeOffset FixedNow = new(2026, 11, 15, 12, 0, 0, TimeSpan.Zero);
 
     private readonly WebApplicationFactory<Program> _factory;
+    private readonly TempDataFile _data = new();
     private readonly HttpClient _client;
 
     public ListCurrentMonthExpensesEndpointTests(WebApplicationFactory<Program> factory)
     {
         // Cada teste ganha seu próprio host (e, portanto, seu próprio ExpenseStore vazio).
         _factory = factory.WithWebHostBuilder(builder =>
-            builder.ConfigureTestServices(services =>
+            builder.UseSetting(ExpenseStore.DataFileSetting, _data.FilePath).ConfigureTestServices(services =>
                 services.AddSingleton<TimeProvider>(new FixedTimeProvider(FixedNow))));
         _client = _factory.CreateClient();
     }
 
-    public void Dispose() => _factory.Dispose();
+    public void Dispose()
+    {
+        _factory.Dispose();
+        _data.Dispose();
+    }
 
     // Critério 1
     [Fact]

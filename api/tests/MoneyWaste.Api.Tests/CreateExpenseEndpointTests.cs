@@ -13,16 +13,21 @@ public sealed class CreateExpenseEndpointTests : IClassFixture<WebApplicationFac
     private static readonly DateTimeOffset FixedNow = new(2026, 11, 9, 15, 30, 0, TimeSpan.Zero);
 
     private readonly WebApplicationFactory<Program> _factory;
+    private readonly TempDataFile _data = new();
 
     public CreateExpenseEndpointTests(WebApplicationFactory<Program> factory)
     {
         // Relógio fixo para o critério "sem data vale hoje" não depender do horário do CI.
         _factory = factory.WithWebHostBuilder(builder =>
-            builder.ConfigureTestServices(services =>
+            builder.UseSetting(ExpenseStore.DataFileSetting, _data.FilePath).ConfigureTestServices(services =>
                 services.AddSingleton<TimeProvider>(new FixedTimeProvider(FixedNow))));
     }
 
-    public void Dispose() => _factory.Dispose();
+    public void Dispose()
+    {
+        _factory.Dispose();
+        _data.Dispose();
+    }
 
     private int StoredCount => _factory.Services.GetRequiredService<ExpenseStore>().Count;
 

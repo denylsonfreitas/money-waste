@@ -11,6 +11,9 @@ builder.Services.AddSingleton<ExpenseStore>();
 
 var app = builder.Build();
 
+// Carrega os gastos guardados já na subida (MW-007): com dados ilegíveis, a API nem sobe.
+app.Services.GetRequiredService<ExpenseStore>();
+
 app.UseCors();
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));

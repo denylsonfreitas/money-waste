@@ -67,6 +67,44 @@ cd web && npm install && npx ng serve
 scripts/check.sh
 ```
 
+## 💾 Onde ficam os dados
+
+Os gastos ficam num arquivo JSON na sua máquina (MW-007). Nada vai para a nuvem.
+
+**Local padrão** (sem configurar nada):
+
+| Sistema | Arquivo |
+|---|---|
+| Linux | `~/.local/share/MoneyWaste/expenses.json` |
+| Windows | `%LOCALAPPDATA%\MoneyWaste\expenses.json` |
+
+A pasta é criada no primeiro registro. Antes disso, a API sobe com a lista vazia.
+
+**Trocar o local:** configuração `Storage:DataFile`. Pela variável de ambiente:
+
+```bash
+Storage__DataFile=/home/eu/gastos/expenses.json dotnet run --project api/src/MoneyWaste.Api
+```
+
+Ou pela linha de comando: `dotnet run --project api/src/MoneyWaste.Api -- --Storage:DataFile=/home/eu/gastos/expenses.json`.
+
+**Começar do zero:** pare a API e apague o arquivo.
+
+```bash
+rm ~/.local/share/MoneyWaste/expenses.json
+```
+
+**Avisos:**
+- **Rode uma instância só** por arquivo. Com duas APIs no mesmo arquivo, a última que grava
+  apaga as mudanças da outra.
+- **Caminho relativo** em `Storage:DataFile` vale a partir da pasta de onde você rodou o
+  comando (diretório de trabalho), não da pasta do projeto. Prefira caminho absoluto.
+- O `.gitignore` só protege arquivos chamados `expenses.json` (e `expenses.json.tmp`). Se apontar
+  para outro nome dentro do repositório (ex.: `dados/gastos.json`), ele pode ir para o Git.
+- Se o arquivo estiver ilegível (corrompido, editado à mão com erro), a API **não sobe** e o log
+  mostra "Não foi possível ler os dados dos gastos em '<caminho>'". O arquivo não é alterado:
+  corrija, mova ou aponte outro local.
+
 ## 🤖 Rodando o time você mesmo
 
 ```bash
@@ -79,7 +117,6 @@ claude            # abra o Claude Code na pasta
 ## 📌 Funcionalidades
 
 - **Registrar um gasto** (MW-001) — valor, descrição, categoria e data (hoje por padrão).
-  Os gastos ficam em memória por enquanto: somem quando a API reinicia.
 - **Listar os gastos do mês atual** (MW-002) — abaixo do formulário, do mais recente para o
   mais antigo, com data, descrição, categoria e valor. Atualiza depois de cada registro.
 - **Ver o total gasto no mês** (MW-003) — "Total do mês: R$ 1.234,56", entre o formulário e a
@@ -95,6 +132,9 @@ claude            # abra o Claude Code na pasta
   R$ 100,00" e "R$ 50,00 a mais que no mês anterior." (ou "a menos", ou "Igual ao mês
   anterior."). Compara o mês anterior inteiro; em janeiro, com dezembro. Atualiza depois de
   registrar, editar ou excluir.
+- **Gastos guardados entre reinícios** (MW-007) — registros, edições e exclusões continuam lá
+  depois de reiniciar a API, com o mesmo id e a mesma ordem. Veja
+  [Onde ficam os dados](#-onde-ficam-os-dados).
 
 Próximas histórias: acompanhe o [backlog](docs/backlog/BACKLOG.md).
 
