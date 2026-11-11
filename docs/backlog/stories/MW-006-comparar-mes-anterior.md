@@ -1,6 +1,6 @@
 # MW-006 — Comparar o mês atual com o anterior
 
-**Status:** Em andamento
+**Status:** Concluída (aguardando merge)
 **Sprint:** 1
 **Prioridade:** 6
 

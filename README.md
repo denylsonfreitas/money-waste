@@ -91,6 +91,10 @@ claude            # abra o Claude Code na pasta
   "Editar" preenche o formulário do topo ("Editar gasto", com "Salvar alterações" e
   "Cancelar"), com as mesmas regras do registro. "Excluir" pede confirmação e apaga de vez.
   Lista, total e categorias atualizam sem recarregar a página.
+- **Comparar com o mês anterior** (MW-006) — logo abaixo do "Total do mês": "Mês anterior:
+  R$ 100,00" e "R$ 50,00 a mais que no mês anterior." (ou "a menos", ou "Igual ao mês
+  anterior."). Compara o mês anterior inteiro; em janeiro, com dezembro. Atualiza depois de
+  registrar, editar ou excluir.
 
 Próximas histórias: acompanhe o [backlog](docs/backlog/BACKLOG.md).
 
@@ -102,6 +106,7 @@ Próximas histórias: acompanhe o [backlog](docs/backlog/BACKLOG.md).
 | `GET` | `/api/expenses` | Lista os gastos do mês atual |
 | `GET` | `/api/expenses/total` | Devolve o total gasto no mês atual |
 | `GET` | `/api/expenses/totals-by-category` | Devolve o total de cada categoria no mês atual |
+| `GET` | `/api/expenses/month-comparison` | Compara o total do mês atual com o do mês anterior |
 | `POST` | `/api/expenses` | Registra um gasto |
 | `PUT` | `/api/expenses/{id}` | Edita um gasto |
 | `DELETE` | `/api/expenses/{id}` | Exclui um gasto |

@@ -10,7 +10,7 @@ Mantido pela PO (Marina). Ordem = prioridade. Status: `Ideia` → `Pronta` → `
 | MW-003 | [Ver o total gasto no mês](stories/MW-003-total-gasto-mes.md) | Entregue |
 | MW-004 | [Ver o total por categoria](stories/MW-004-total-por-categoria.md) | Entregue |
 | MW-005 | [Editar e excluir um gasto](stories/MW-005-editar-excluir-gasto.md) | Entregue |
-| MW-006 | [Comparar o mês atual com o anterior](stories/MW-006-comparar-mes-anterior.md) | Em andamento |
+| MW-006 | [Comparar o mês atual com o anterior](stories/MW-006-comparar-mes-anterior.md) | Concluída (aguardando merge) |
 | MW-007 | Persistir os gastos entre reinícios da API | Ideia |
 | MW-009 | Endurecer a validação do registro de gasto (mensagens em português para JSON malformado e tipo errado, valor máximo, limite da descrição, valores sempre com 2 casas na resposta — `amount`, `total` e totais por categoria —, teste de que POST inválido não altera o total, e o front tratar resposta malformada como `{}` sem mostrar "R$ NaN"). Inclui também, para a **edição** (QA e daily da MW-005): data apagada no formulário de edição não pode virar "hoje" sem aviso — exigir a data ao editar ou manter a data original; e teste de valor negativo na edição | Ideia |
 | MW-010 | Acabamento de editar/excluir (MW-005; QA, daily e revisor no PR #7): ao excluir o gasto que está em edição, o formulário volta a "Novo gasto"; a mensagem "Não foi possível excluir o gasto." some quando a lista recarrega; o botão "Excluir" fica desabilitado enquanto o pedido de exclusão não volta (sem duplo DELETE); ao clicar "Editar" no celular, a tela rola até o formulário; no modo de edição o valor aparece com 2 casas (45,90, não 45.9) | Ideia |
