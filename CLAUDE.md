@@ -29,11 +29,12 @@ Se os tipos de subagente `po`, `dev` etc. não estiverem disponíveis na sessão
 `general-purpose` e mande-o ler e assumir o arquivo da persona em `.claude/agents/`.
 
 ## Escala
-Turno das 18h à meia-noite (`America/Bahia`), no máximo 2 histórias novas por dia, até o MVP
+Turno das 18h à meia-noite (`America/Bahia`), sem limite fixo de histórias (uma por vez, até
+acabar o turno ou o limite de uso do plano), até o MVP
 (MW-001 a MW-007) ficar pronto. Depois, férias. Detalhes em **`docs/team/escala.md`**.
 
 ## Fluxo de um turno (`/sprint`)
-1. **Scrum Master** confere escala, férias, trava de turno, trabalho pela metade e cota do dia.
+1. **Scrum Master** confere escala, férias, trava de turno e trabalho pela metade.
 2. **PO** escolhe a próxima história do MVP e a refina. O Scrum Master cria a branch
    `feat/<id>-<slug>` e abre o PR rascunho na hora.
 3. **Dev** implementa e escreve testes.

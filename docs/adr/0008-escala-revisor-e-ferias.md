@@ -10,7 +10,7 @@ do Claude, para então testar o MVP e repensar o processo.
 
 ## Decisão
 - **Escala:** os turnos rodam por tarefa agendada das 18h à meia-noite (`America/Bahia`).
-- **Cota:** no máximo 2 histórias novas por dia. Retomar trabalho pela metade não gasta cota.
+- **Cota:** no máximo 2 histórias novas por dia. Retomar trabalho pela metade não gasta cota. *(Substituída em 10/11/2026: sem limite fixo; o limite é o uso do plano do Claude — ver `docs/team/escala.md`.)*
 - **Revisor (Rafa):** um novo agente revisa o PR inteiro depois da QA e da documentação.
   Se aprovar, ele faz o merge com squash; se reprovar, a história volta ao Dev.
 - **MVP e férias:** quando MW-001 a MW-007 estiverem na `main`, o time publica as notas

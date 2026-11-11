@@ -46,6 +46,8 @@ Mantido pelo Tech Writer (Leo).
 - Processo do time (ADR 0008): turno das 18h à meia-noite, no máximo 2 histórias novas por
   dia, novo agente revisor (Rafa) que aprova e faz o merge, e férias quando o MVP
   (MW-001 a MW-007) estiver pronto.
+- Processo do time: a cota de 2 histórias por dia foi removida. O time emenda uma história
+  na outra enquanto for horário de turno, até o limite de uso do plano do Claude.
 - A regra de "mês atual" saiu de `ListCurrentMonthExpenses` para `CurrentMonth.Expenses`, usada
   pela lista e pelo total. O comportamento do `GET /api/expenses` não mudou.
 - `ExpenseCategories` ganhou a lista ordenada `Ordered`; `All` passou a ser derivado dela.
