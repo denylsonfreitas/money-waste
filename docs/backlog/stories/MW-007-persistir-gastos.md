@@ -98,3 +98,6 @@ configuração).
   cabe, avisa na daily antes da QA, e a PO divide (por exemplo, MW-007a: registrar/editar/excluir
   persistidos; MW-007b: arquivo ilegível e concorrência).
 - Esta é a **última história do MVP**: depois do merge, o time entra de férias (`docs/team/escala.md`).
+
+## Decisões do Dev
+- Persistência num arquivo JSON local com `System.Text.Json` (sem pacote novo), substituindo a ADR 0002: o `ExpenseStore` continua com a lista em memória (ordem de registro da ADR 0007) e cada mudança aceita grava o arquivo inteiro (temporário + `File.Move`, sob o mesmo lock) **antes** de trocar a lista, então pedidos recusados ou gravação com falha não mudam nada. Local padrão `<LocalApplicationData>/MoneyWaste/expenses.json` (no Linux `~/.local/share/MoneyWaste/expenses.json`; no Windows `%LOCALAPPDATA%\MoneyWaste\expenses.json`), trocável pela configuração `Storage:DataFile` (ex.: variável de ambiente `Storage__DataFile`); começar do zero = apagar o arquivo. O arquivo é lido na subida (`Program.cs` resolve o store após o `Build`); se estiver ilegível, a API não sobe, loga em português (Critical) o caminho e não toca no arquivo. `expenses.json`/`expenses.json.tmp` no `.gitignore`. Nos testes, cada host aponta para um `TempDataFile` próprio (pasta temporária única, apagada no `Dispose`).

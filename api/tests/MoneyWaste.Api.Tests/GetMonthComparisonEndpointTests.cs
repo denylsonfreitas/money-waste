@@ -14,6 +14,7 @@ public sealed class GetMonthComparisonEndpointTests : IClassFixture<WebApplicati
 
     private readonly WebApplicationFactory<Program> _baseFactory;
     private WebApplicationFactory<Program>? _factory;
+    private readonly TempDataFile _data = new();
     private HttpClient _client = null!;
 
     public GetMonthComparisonEndpointTests(WebApplicationFactory<Program> factory)
@@ -22,14 +23,18 @@ public sealed class GetMonthComparisonEndpointTests : IClassFixture<WebApplicati
         StartHost(November15);
     }
 
-    public void Dispose() => _factory?.Dispose();
+    public void Dispose()
+    {
+        _factory?.Dispose();
+        _data.Dispose();
+    }
 
     // Cada teste ganha seu próprio host (e, portanto, seu próprio ExpenseStore vazio).
     private void StartHost(DateTimeOffset now)
     {
         _factory?.Dispose();
         _factory = _baseFactory.WithWebHostBuilder(builder =>
-            builder.ConfigureTestServices(services =>
+            builder.UseSetting(ExpenseStore.DataFileSetting, _data.FilePath).ConfigureTestServices(services =>
                 services.AddSingleton<TimeProvider>(new FixedTimeProvider(now))));
         _client = _factory.CreateClient();
     }

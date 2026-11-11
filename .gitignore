@@ -13,3 +13,7 @@ dist/
 .vscode/
 .idea/
 .DS_Store
+
+# Dados locais dos gastos (MW-007) — nunca vão para o Git
+expenses.json
+expenses.json.tmp
