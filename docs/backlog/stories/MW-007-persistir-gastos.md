@@ -1,6 +1,6 @@
 # MW-007 — Persistir os gastos entre reinícios da API
 
-**Status:** Em andamento
+**Status:** Concluída (aguardando merge)
 **Sprint:** 1
 **Prioridade:** 7 (última do MVP)
 

@@ -1,6 +1,6 @@
 # ADR 0007 — `ExpenseStore` em lista com `lock`, guardando a ordem de registro
 
-**Status:** Aceita · **Data:** 2026-11-09 · **História:** MW-002 · **Altera:** ADR 0002
+**Status:** Aceita · **Data:** 2026-11-09 · **História:** MW-002 · **Altera:** ADR 0002 · Persistência em arquivo: [ADR 0014](0014-gastos-em-arquivo-json-local.md)
 
 ## Contexto
 Na MW-002, gastos com a mesma data aparecem do registrado por último para o primeiro.

@@ -57,6 +57,13 @@ Mantido pelo Tech Writer (Leo).
   anterior."). Atualizam depois de registrar, editar ou excluir. Se a API falhar, mostra
   "Não foi possível carregar a comparação com o mês anterior." no lugar das duas linhas.
 - ADR 0013: comparação com o mês anterior em endpoint próprio.
+- Gastos guardados entre reinícios (MW-007): registros, edições e exclusões aceitos ficam num
+  arquivo JSON local, com o mesmo `id`, valores exatos em centavos e a ordem de registro. Local
+  padrão `~/.local/share/MoneyWaste/expenses.json` (Linux) ou
+  `%LOCALAPPDATA%\MoneyWaste\expenses.json` (Windows), trocável por `Storage:DataFile`
+  (`Storage__DataFile`). Sem arquivo, a API começa vazia. Para começar do zero, apague o arquivo.
+- Seção "Onde ficam os dados" no README.
+- ADR 0014: gastos num arquivo JSON local; substitui a ADR 0002.
 
 ### Alterado
 - `ExpenseStore` trocou o `ConcurrentDictionary` por `List` com `lock`, para guardar a ordem
@@ -82,9 +89,26 @@ Mantido pelo Tech Writer (Leo).
   dia) do `Expenses`. O comportamento da lista, do total e das categorias não mudou.
 - O `refreshMonth()` do `App` também recarrega a comparação: agora são quatro `GET` depois de
   cada registro, edição ou exclusão.
+- `ExpenseStore` grava o arquivo inteiro (temporário + `File.Move`, sob o mesmo `lock`) antes de
+  aplicar cada mudança; se a gravação falhar, o pedido dá `500` e nada muda. O `Program.cs`
+  carrega os gastos logo na subida. Endpoints, respostas e front não mudaram.
+- Com o arquivo de dados ilegível, a API não sobe: loga em português (`Critical`) o caminho do
+  arquivo e não o altera.
+- `.gitignore` ignora `expenses.json` e `expenses.json.tmp`.
+- Os testes de integração usam um arquivo de dados temporário por host (`TempDataFile`); nenhum
+  teste grava no local padrão.
+
+### Removido
+- Gastos só em memória (ADR 0002, substituída pela ADR 0014): eles não somem mais ao reiniciar.
 
 ### Observações
-- Os gastos ficam em memória e somem ao reiniciar a API (persistência é a MW-007).
+- Rode uma API só por arquivo de dados: com duas, a última que grava apaga as mudanças da outra.
+- `Storage:DataFile` relativo vale a partir do diretório de trabalho do processo. Um nome que não
+  seja `expenses.json` dentro do repositório não fica protegido pelo `.gitignore`.
+- Arquivo sem permissão de leitura, caminho que é pasta ou `Storage:DataFile` vazio impedem a
+  subida com mensagem do .NET em inglês, não a mensagem em português.
+- JSON válido mas incompleto (editado à mão) é carregado com valores padrão; o arquivo não é
+  validado além disso. O arquivo escapa acentos (`ç`).
 - O mês atual da lista vem da data do servidor; a data do formulário vem do navegador. Com
   fusos diferentes, perto da virada do mês, um gasto pode não aparecer na lista (nem no total).
 - O `total` não sai com 2 casas fixas (`0`, `0.30`, `158.40`), igual ao `amount`. Vale também

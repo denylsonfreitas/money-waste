@@ -2,6 +2,23 @@
 
 Base local: `http://localhost:5215`
 
+## Dados e subida da API
+Desde a MW-007 os gastos ficam num arquivo JSON local (local padrão e como trocar no
+[README](../README.md#-onde-ficam-os-dados); decisão na [ADR 0014](adr/0014-gastos-em-arquivo-json-local.md)).
+Rotas, corpos e respostas não mudaram.
+
+- **Na subida**, a API lê o arquivo. Sem arquivo, começa com a lista vazia.
+- **Arquivo ilegível:** a API **não sobe** (nenhum endpoint responde, nem o `/api/health`). O
+  log traz, em nível `Critical`:
+  ```
+  Não foi possível ler os dados dos gastos em '/home/eu/.local/share/MoneyWaste/expenses.json'. O arquivo não foi alterado; corrija-o, mova-o ou aponte outro local em Storage:DataFile.
+  ```
+  Arquivo sem permissão de leitura, caminho que é uma pasta ou `Storage:DataFile` vazio também
+  impedem a subida, mas com a mensagem padrão do .NET, em inglês.
+- `POST`, `PUT` e `DELETE` aceitos gravam o arquivo **antes** de responder. Se a gravação falhar
+  (disco cheio, sem permissão), a resposta é **500** e nada muda. Pedidos recusados (`400`,
+  `404`) não gravam.
+
 ## `GET /api/health`
 Verifica se a API está no ar.
 
@@ -145,7 +162,8 @@ Sem gastos no mês atual nem no anterior, tudo vale `0` (nunca `404` nem erro).
 ```
 
 ## `POST /api/expenses`
-Registra um gasto. Nesta versão os gastos ficam **em memória** (somem ao reiniciar a API).
+Registra um gasto. O gasto fica guardado no arquivo de dados e continua lá depois de reiniciar
+a API (MW-007).
 
 ### Corpo da requisição
 | Campo | Tipo | Obrigatório | Regras |
