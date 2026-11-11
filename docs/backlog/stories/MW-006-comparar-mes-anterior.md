@@ -1,6 +1,6 @@
 # MW-006 — Comparar o mês atual com o anterior
 
-**Status:** Concluída (aguardando merge)
+**Status:** Entregue (PR #8, commit `ffb5f6a`)
 **Sprint:** 1
 **Prioridade:** 6
 
